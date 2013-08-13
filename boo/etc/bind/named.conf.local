@@ -1,0 +1,145 @@
+//
+// Do any local configuration here
+//
+
+#zone "admin.mppee.gob.ve" {
+#       type master;
+#      database "ldap ldap://10.1.5.105/zoneName=mppee.gob.ve,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+#};
+
+zone "servers.mppee.gob.ve" {
+        type master;
+        database "ldap ldap://10.1.5.105/zoneName=mppee.gob.ve,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+};
+
+zone "mppee.gob.ve" {
+        type master;
+        database "ldap ldap://10.1.5.105/zoneName=mppee.gob.ve,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+};
+
+zone "10.in-addr.arpa" {
+        type master;
+        database "ldap ldap://10.1.5.105/zoneName=10.in-addr.arpa,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+};
+
+zone "opsis.org.ve" {
+        type master;
+        database "ldap ldap://10.1.5.105/zoneName=opsis.org.ve,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+};
+
+zone "opsis.com.ve" {
+        type master;
+        database "ldap ldap://10.1.5.105/zoneName=opsis.org.ve,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+};
+
+zone "cng.org.ve" {
+        type master;
+        database "ldap ldap://10.1.5.105/zoneName=opsis.org.ve,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+};
+
+zone "cng.com.ve" {
+        type master;
+        database "ldap ldap://10.1.5.105/zoneName=opsis.org.ve,ou=privateZones,ou=DNS,ou=Servicios,dc=mppee,dc=gob,dc=ve????!bindname=cn=bind9ldap%2cou=accounts%2cou=Administradores%2cdc=mppee%2cdc=gob%2cdc=ve,!x-bindpw=0796F0252B0399BBDE226B4BC307CDC860F6A2D7C37D2A7746B37630D1EA2B33,x-tls 3600";
+};
+
+#zone "mpppf.gob.ve" {
+#	type forward;
+#	forwarders {
+#		10.1.4.230;
+#		10.1.4.231;
+#	};
+#};
+#
+#zone "mppef.gob.ve" {
+#        type forward;
+#        forwarders {
+#                10.1.4.230;
+#                10.1.4.231;
+#        };
+#};
+#
+#zone "mppf.gob.ve" {
+#        type forward;
+#        forwarders {
+#                10.1.4.230;
+#                10.1.4.231;
+#        };
+#};
+#
+zone "mf.gov.ve" {
+	type forward;
+	forwarders {
+		10.1.4.231;
+	};
+};
+
+zone "laedc.com.ve" {
+	type master;
+	file "/etc/bind/db.laedc.com.ve";
+	#forwarders {
+	#	10.2.101.1;
+	#	10.2.101.3;
+	#};
+};
+
+zone "grupoedc.com" {
+        type forward;
+        forwarders {
+                10.2.101.1;
+                10.2.101.3;
+        };
+};
+
+zone "cvgedelca.com.ve" {
+        type forward;
+        forwarders {
+                10.2.101.1;
+                10.2.101.3;
+        };
+};
+
+zone "edc-ven.com.ve" {
+        type forward;
+        forwarders {
+                10.2.101.1;
+                10.2.101.3;
+        };
+};
+
+zone "operaciones.com.ve" {
+	type forward;
+	forwarders {
+		10.2.101.1;
+		10.2.101.3;
+	};
+};
+
+zone "rpz.spamhaus.org" {
+	type slave;
+	masters { 10.1.5.109; };
+	file "/var/cache/bind/rpz.spamhaus.org.db";
+};
+
+zone "corpoelec.gob.ve" {
+	type forward;
+	forwarders {
+		130.1.200.29;
+	};
+};
+
+zone "corpoelec.com.ve" {
+        type forward;
+        forwarders {
+                130.1.200.29;
+        };
+};
+
+zone "cadafe.com.ve" {
+	type forward;
+	forwarders {
+		10.2.101.3;
+	};
+};
+
+include "/etc/bind/zones.rfc1918";
+
