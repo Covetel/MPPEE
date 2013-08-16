@@ -1,0 +1,47 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+#auto eth0 eth1 eth2 eth3
+allow-hotplug eth0
+iface eth0 inet manual
+
+auto bond0
+allow-hotplug bond0
+iface bond0 inet manual
+	bond_mode		4
+	bond_miimon		100
+	bond_xmit_policy	1
+	slaves			eth0 eth1 eth2 eth3
+
+auto bond0.287
+allow-hotplug bond0.287
+iface bond0.287 inet manual
+
+auto bond0.390
+allow-hotplug bond0.390
+iface bond0.390 inet manual
+
+auto xenbr_inside0
+allow-hotplug xenbr_inside0
+iface xenbr_inside0 inet static
+	address	10.200.87.160
+	netmask	255.255.255.0
+	gateway	10.200.87.1
+	dns-nameservers	10.1.5.104 10.1.5.121
+	dns-search mppee.gob.ve
+	bridge_ports	bond0.287
+	bridge_stp	off
+	bridge_setfd	1
+
+auto xenbr_inside1
+allow-hotplug xenbr_inside1
+iface xenbr_inside1 inet manual
+	dns-search mppee.gob.ve
+	bridge_ports	bond0.390
+	bridge_stp	off
+	bridge_setfd	1
