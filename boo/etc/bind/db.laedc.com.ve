@@ -1,0 +1,22 @@
+;
+; BIND reverse data file for local loopback interface
+;
+$TTL	1200
+@	IN	SOA	ns1 admin.grupoedc.com. (
+			      2010072001		; Serial
+			 900		; Refresh
+			  600		; Retry
+			84600		; Expire
+			 3600 )	; Negative Cache TTL
+;
+	IN	NS	ns1
+	IN	NS	ns2
+	IN	MX	10 mail.messaging.microsoft.com.
+	IN	A	200.1.119.20
+
+www	IN	CNAME	@
+mail	IN	A	10.250.34.215
+pae	IN	A	200.1.119.49
+ns1	IN	A	10.1.5.104
+ns2	IN	A	10.1.5.121
+acceso.edc	IN	A	200.1.10.1

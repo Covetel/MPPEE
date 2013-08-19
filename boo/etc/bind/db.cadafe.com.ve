@@ -1,0 +1,17 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	ns1.mppee.gob.ve. root.cadafe.com.ve. (
+		     2013041801		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@	IN	NS	ns1.mppee.gob.ve.
+@	IN	A	127.0.0.1
+@	IN	AAAA	::1
+cadafe.com.ve	IN	MX	10	mail.cadafe.com.ve.
+
+mail	IN 	A 	10.1.152.181

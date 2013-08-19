@@ -1,0 +1,18 @@
+logging {
+         channel default {
+                 file "/var/log/named/named.log" versions 5 size 100m;
+                 severity debug 0;
+                 print-time yes;
+                 print-severity yes;
+                 print-category yes;
+         };
+
+	category default { default; };
+	category database { default; };
+	category security { default; };
+	category queries { default; };
+	category config { default; };
+	category notify { default; };
+	category general { default; };
+};
+

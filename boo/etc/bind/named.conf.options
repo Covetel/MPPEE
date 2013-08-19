@@ -1,0 +1,57 @@
+acl "mppee_networks" {
+	10.1.5.0/24;
+	192.168.244.0/24;
+	10.2.0.0/16;
+	127.0.0.0/24;
+	10.3.0.0/16;
+	10.1.11.0/29;
+	10.0.0.0/8;
+};
+
+options {
+	directory "/var/cache/bind";
+
+	// If there is a firewall between you and nameservers you want
+	// to talk to, you may need to fix the firewall to allow multiple
+	// ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+	// If your ISP provided one or more IP addresses for stable 
+	// nameservers, you probably want to use them as forwarders.  
+	// Uncomment the following block, and insert the addresses replacing 
+	// the all-0's placeholder.
+
+	response-policy {
+		zone "rpz.spamhaus.org" policy CNAME rpzbanned.mppee.gob.ve;
+	};
+
+	forward first;
+	forwarders {
+		8.8.4.4;
+		208.67.222.222;
+	};
+
+        pid-file "/var/run/bind/run/named.pid";
+
+	auth-nxdomain no;    # conform to RFC1035
+	listen-on-v6 { any; };
+
+        rrset-order { order cyclic; };
+        max-cache-size 128m;
+        memstatistics-file "mem.stats";
+        statistics-file "bind.stats";
+        tcp-clients 128;
+        zone-statistics yes;
+
+	recursion yes;
+	allow-query { "mppee_networks"; } ;
+	allow-recursion { "mppee_networks"; };
+
+	allow-transfer { none; };
+
+        version "Not disclosed";
+
+
+	query-source address * port *;
+};
+
+include "/etc/bind/named.conf.log";
