@@ -4,7 +4,7 @@ use warnings;
 use Net::LDAP::LDIF;
 use Data::Dumper;
 
-my $file =  shift || "/home/aphu/Documents/Covetel/MPPEE/MPPEE-Covetel/dns.ldif";
+my $file =  shift || "/root/dns.ldif";
 
 my $hosts = "/etc/hosts";
 my $dnsmasq = "/etc/dnsmasq.conf";
@@ -20,24 +20,21 @@ while ( not $ldif->eof() ) {
     my $entrys =  $ldif->read_entry();
 
     foreach my $entry ( $entrys ) {
-            if ( $entry->get_value("arecord") ) { 
-                print HOST &pointer($entry)."\n"; 
-            }
-            if ( $entry->get_value("dnsttl") ) { 
-                print DNS &dnsttl($entry)."\n"; 
-            }
-            if ( $entry->get_value("mxrecord") ) { 
-                print DNS &mxrecord($entry)."\n"; 
-            }
-            if ( $entry->get_value("cnamerecord") ) { 
-                print DNS &cnamerecord($entry)."\n"; 
-            }
-            if ( $entry->get_value("txtrecord") ) { 
-                print DNS &txtrecord($entry)."\n"; 
-            }
-            if ( $entry->get_value("ptrrecord") ) { 
-                print DNS &ptrrecord($entry)."\n"; 
-            }
+        if ( $entry->get_value("arecord") ) {
+            print HOST &pointer($entry)."\n";
+        }
+        if ( $entry->get_value("mxrecord") ) {
+            print DNS &mxrecord($entry)."\n";
+        }
+        if ( $entry->get_value("cnamerecord") && $entry->get_value("relativedomainname") ne "@" ) {
+            print DNS &cnamerecord($entry)."\n";
+        }
+        if ( $entry->get_value("txtrecord") ) {
+            print DNS &txtrecord($entry)."\n";
+        }
+        if ( $entry->get_value("ptrrecord") ) {
+            print DNS &ptrrecord($entry)."\n";
+        }
     }
 
     close HOST;
