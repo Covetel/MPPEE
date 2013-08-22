@@ -1,15 +1,8 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use v5.14;
 use Net::LDAP::LDIF;
 use Data::Dumper;
-
-#neg-ttl = 1200
-#ptr-record=
-#address=
-#cname=
-#mx-host
 
 my $file =  shift || "/home/aphu/Documents/Covetel/MPPEE/MPPEE-Covetel/dns.ldif";
 
@@ -51,7 +44,7 @@ while ( not $ldif->eof() ) {
     close DNS;
 }
 
-ub pointer {
+sub pointer {
     my $entry = shift;
 
     my $pointer = $entry->get_value("arecord").
