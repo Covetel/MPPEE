@@ -72,7 +72,7 @@ sub mxrecord {
     $host =~ s/\.$//g;
 
     my $mxrecord = "mx-host=".
-        $host.
+        $host.".".$entry->get_value("zonename").
         ",".
         $entry->get_value("zonename").
         ",".
