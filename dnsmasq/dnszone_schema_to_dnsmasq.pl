@@ -19,22 +19,24 @@ while ( not $ldif->eof() ) {
     my $entrys =  $ldif->read_entry();
 
     foreach my $entry ( $entrys ) {
-        given ( $entry ) {
-            when ( $entry->get_value("arecord") ) {
-                    if ( $entry->get_value("relativedomainname") eq "@" )  {
-                        &server($entry);
-                    }else{
-                        &arecord($entry);
-                    }
-            }
-            when ( $entry->get_value("mxrecord") ) { &mxrecord($entry) }
-            when ( $entry->get_value("cnamerecord") ) {
-                if ( $entry->get_value("relativedomainname") ne "@" ) {
-                    &cnamerecord($entry);
+        if ( $entry->dn =~ /privateZones/ ) {
+            given ( $entry ) {
+                when ( $entry->get_value("arecord") ) {
+                        if ( $entry->get_value("relativedomainname") eq "@" )  {
+                            &server($entry);
+                        }else{
+                            &arecord($entry);
+                        }
                 }
+                when ( $entry->get_value("mxrecord") ) { &mxrecord($entry) }
+                when ( $entry->get_value("cnamerecord") ) {
+                    if ( $entry->get_value("relativedomainname") ne "@" ) {
+                        &cnamerecord($entry);
+                    }
+                }
+                when ( $entry->get_value("txtrecord") ) { &txtrecord($entry) }
+                when ( $entry->get_value("ptrrecord") ) { &ptrrecord($entry) }
             }
-            when ( $entry->get_value("txtrecord") ) { &txtrecord($entry) }
-            when ( $entry->get_value("ptrrecord") ) { &ptrrecord($entry) }
         }
     }
 
