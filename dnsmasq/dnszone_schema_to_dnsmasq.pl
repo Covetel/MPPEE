@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Net::LDAP::LDIF;
+use v5.14;
 use Data::Dumper;
 
 my $file =  shift || "/root/dns.ldif";
@@ -11,34 +12,29 @@ my $dnsmasq = "/etc/dnsmasq.conf";
 
 my $ldif = Net::LDAP::LDIF->new( $file, "r",  onerror => 'die' );
 
-my @rep_cname;
-
 while ( not $ldif->eof() ) {
-    open HOST, ">>", $hosts || die "Error $!"; 
-    open DNS, ">>", $dnsmasq || die "Error $!"; 
-
-    my @h;
+    open DNS, ">>", $dnsmasq || die "Error $!";
+    open HOST, ">>", $hosts || die "Error $!";
 
     my $entrys =  $ldif->read_entry();
 
     foreach my $entry ( $entrys ) {
-        if ( $entry->get_value("arecord") && $entry->get_value("relativedomainname") ne "@" ) {
-            print HOST &pointer($entry)."\n";
-        }
-        if ( $entry->get_value("mxrecord") ) {
-            print DNS &mxrecord($entry)."\n";
-        }
-        if ( $entry->get_value("cnamerecord") && $entry->get_value("relativedomainname") ne "@" ) {
-            print DNS &cnamerecord($entry)."\n";
-        }
-        if ( $entry->get_value("txtrecord") ) {
-            print DNS &txtrecord($entry)."\n";
-        }
-        if ( $entry->get_value("ptrrecord") ) {
-            print DNS &ptrrecord($entry)."\n";
-        }
-        if ( $entry->get_value("arecord") && $entry->get_value("relativedomainname") eq "@" ) {
-            print DNS &server($entry)."\n";
+        given ( $entry ) {
+            when ( $entry->get_value("arecord") ) {
+                    if ( $entry->get_value("relativedomainname") eq "@" )  {
+                        &server($entry);
+                    }else{
+                        &arecord($entry);
+                    }
+            }
+            when ( $entry->get_value("mxrecord") ) { &mxrecord($entry) }
+            when ( $entry->get_value("cnamerecord") ) {
+                if ( $entry->get_value("relativedomainname") ne "@" ) {
+                    &cnamerecord($entry);
+                }
+            }
+            when ( $entry->get_value("txtrecord") ) { &txtrecord($entry) }
+            when ( $entry->get_value("ptrrecord") ) { &ptrrecord($entry) }
         }
     }
 
@@ -46,88 +42,93 @@ while ( not $ldif->eof() ) {
     close DNS;
 }
 
-foreach my $rep (@rep_cname) {
-    print "CNAME REPETIDOS!! ".$rep."\n";
-}
-
-sub pointer {
+sub arecord {
     my $entry = shift;
 
-    my $pointer = $entry->get_value("arecord").
-        " ".
-        $entry->get_value("relativedomainname").
-        ".".
-        $entry->get_value("zonename").
-        " ".
-        $entry->get_value("relativedomainname");
+    foreach my $a ( $entry->get_value("relativedomainname") ) {
+        my $arecord = $entry->get_value("arecord").
+            " ".
+            $a.
+            ".".
+            $entry->get_value("zonename").
+            " ".
+            $a;
 
-    return $pointer;
+        print HOST $arecord."\n";
+    }
+
 }
 
 sub mxrecord {
     my $entry = shift;
 
-    my ($preference, $host) = split(" ", $entry->get_value("mxrecord"));
+    foreach my $mx ( $entry->get_value("mxrecord") ) {
+        my ($preference, $host) = split(" ", $mx);
 
-    $host =~ s/\.$//g;
+        $host =~ s/\.$//g;
 
-    my $mxrecord = "mx-host=".
-        $host.".".$entry->get_value("zonename").
-        ",".
-        $entry->get_value("zonename").
-        ",".
-        $preference;
-
-    return $mxrecord;
+        my $mxrecord = "mx-host=".
+            $host.".".$entry->get_value("zonename").
+            ",".
+            $entry->get_value("zonename").
+            ",".
+            $preference;
+        print DNS $mxrecord."\n";
+    }
 }
 
 sub cnamerecord {
     my $entry = shift;
 
-    my $cnamerecord;
+    foreach my $cname ( $entry->get_value("cnamerecord") ) {
+        my $cnamerecord = "cname=".
+                $entry->get_value("relativedomainname").
+                ",".
+                $cname;
 
-    #Evitar cnames repetidos
-    unless ($entry->get_value("cnamerecord") ~~ @rep_cname) {
-        $cnamerecord = "cname=".
-            $entry->get_value("cnamerecord").
-            ",".
-            $entry->get_value("relativedomainname");
+        print DNS $cnamerecord."\n";
     }
-
-    #Lista con cname repetidos
-    push (@rep_cname, $entry->get_value("cnamerecord"));
-
-    return $cnamerecord;
 }
 
 sub txtrecord {
     my $entry = shift;
 
-    my $txtrecord = "txt-record=".
-        $entry->get_value("zonename").
-        ",".
-        $entry->get_value("txtrecord");
+    foreach my $txt ( $entry->get_value("txtrecord") ) {
+        my $zone;
 
-    return $txtrecord;
+        if ( $entry->get_value("relativedomainname") eq "@" ) {
+            $zone = $entry->get_value("zonename");
+        }else{
+            $zone = $entry->get_value("relativedomainname").".".$entry->get_value("zonename");
+        }
+
+        my $txtrecord = "txt-record=".
+            $zone.
+            ",".
+            $txt;
+
+        print DNS $txtrecord."\n";
+    }
 }
 
 sub ptrrecord {
     my $entry = shift;
 
-    my $ptr = $entry->get_value("ptrrecord");
-    $ptr =~ s/\.$//g;
+    foreach my $ptr ($entry->get_value("ptrrecord")) {
+        $ptr =~ s/\.$//g;
 
-    my $zone = $entry->get_value("zonename");
-    $zone =~ s/$/\./g;
+        my $zone = $entry->get_value("zonename");
+        $zone =~ s/$/\./g;
 
-    my $ptrrecord = "ptr-record=".
-        $zone.
-        ",".
-        "\"".
-        $ptr.
-        "\"";
+        my $ptrrecord = "ptr-record=".
+            $zone.
+            ",".
+            "\"".
+            $ptr.
+            "\"";
 
-    return $ptrrecord;
+        print DNS $ptrrecord."\n";
+    }
 }
 
 sub dnsttl {
@@ -147,5 +148,5 @@ sub server {
         "/".
         $entry->get_value("arecord");
 
-    return $server;
+    print DNS $server."\n";
 }
