@@ -9,38 +9,56 @@ my $file =  shift || "/root/dns.ldif";
 
 my $hosts = "/etc/hosts";
 my $dnsmasq = "/etc/dnsmasq.conf";
+my $cnames = "/etc/dnsmasq.d/cname.conf";
+my $ptrs = "/etc/dnsmasq.d/ptr.conf";
+my $txt = "/etc/dnsmasq.d/txt.conf";
+my $mx = "/etc/dnsmasq.d/mx.conf";
+my $srvs = "/etc/dnsmasq.d/srv.conf";
 
 my $ldif = Net::LDAP::LDIF->new( $file, "r",  onerror => 'die' );
 
 while ( not $ldif->eof() ) {
     open DNS, ">>", $dnsmasq || die "Error $!";
+    open CNAMES, ">>", $cnames || die "Error $!";
+    open PTRS, ">>", $ptrs || die "Error $!";
+    open TXT, ">>", $txt || die "Error $!";
+    open MX, ">>", $mx || die "Error $!";
+    open SRVS, ">>", $srvs || die "Error $!";
     open HOST, ">>", $hosts || die "Error $!";
 
     my $entrys =  $ldif->read_entry();
 
     foreach my $entry ( $entrys ) {
         if ( $entry->dn =~ /privateZones/ ) {
-            given ( $entry ) {
-                when ( $entry->get_value("arecord") ) {
-                        if ( $entry->get_value("relativedomainname") eq "@" )  {
-                            &server($entry);
-                        }else{
-                            &arecord($entry);
-                        }
-                }
-                when ( $entry->get_value("mxrecord") ) { &mxrecord($entry) }
-                when ( $entry->get_value("cnamerecord") ) {
-                    if ( $entry->get_value("relativedomainname") ne "@" ) {
-                        &cnamerecord($entry);
+            if ( $entry->get_value("arecord") ) {
+                    if ( $entry->get_value("relativedomainname") eq "@" )  {
+                        &server($entry);
+                    }else{
+                        &arecord($entry);
                     }
-                }
-                when ( $entry->get_value("txtrecord") ) { &txtrecord($entry) }
-                when ( $entry->get_value("ptrrecord") ) { &ptrrecord($entry) }
             }
+            if ( $entry->get_value("mxrecord") ) { &mxrecord($entry) }
+            if ( $entry->get_value("cnamerecord") ) {
+                if ( $entry->get_value("relativedomainname") ne "@" ) {
+                    &cnamerecord($entry);
+                }
+            }
+            if ( $entry->get_value("txtrecord") ) { &txtrecord($entry) }
+            if ( $entry->get_value("ptrrecord") ) {
+                if ( $entry->get_value("relativedomainname") ne "@" ) {
+                    &ptrrecord($entry);
+                }
+            }
+            if ( $entry->get_value("srvrecord") ) { &srvrecord($entry) }
         }
     }
 
     close HOST;
+    close CNAMES;
+    close PTRS;
+    close SRVS;
+    close TXT;
+    close MX;
     close DNS;
 }
 
@@ -75,7 +93,7 @@ sub mxrecord {
             $entry->get_value("zonename").
             ",".
             $preference;
-        print DNS $mxrecord."\n";
+        print MX $mxrecord."\n";
     }
 }
 
@@ -88,7 +106,7 @@ sub cnamerecord {
                 ",".
                 $cname;
 
-        print DNS $cnamerecord."\n";
+        print CNAMES $cnamerecord."\n";
     }
 }
 
@@ -109,7 +127,7 @@ sub txtrecord {
             ",".
             $txt;
 
-        print DNS $txtrecord."\n";
+        print TXT $txtrecord."\n";
     }
 }
 
@@ -119,17 +137,14 @@ sub ptrrecord {
     foreach my $ptr ($entry->get_value("ptrrecord")) {
         $ptr =~ s/\.$//g;
 
-        my $zone = $entry->get_value("zonename");
-        $zone =~ s/$/\./g;
-
         my $ptrrecord = "ptr-record=".
-            $zone.
+            $entry->get_value("relativedomainname").
+            ".".
+            $entry->get_value("zonename").
             ",".
-            "\"".
-            $ptr.
-            "\"";
+            $ptr;
 
-        print DNS $ptrrecord."\n";
+        print PTRS $ptrrecord."\n";
     }
 }
 
@@ -151,4 +166,27 @@ sub server {
         $entry->get_value("arecord");
 
     print DNS $server."\n";
+}
+
+sub srvrecord {
+    my $entry = shift;
+
+    my ($tls, $prio, $port, $ldap) = split(" ", $entry->get_value("srvrecord"));
+
+    foreach my $srv ( $entry->get_value("relativedomainname") ) {
+        my $srvrecord = "srv-host=".
+                $srv.
+                ".".
+                $entry->get_value("zonename").
+                ",".
+                $ldap.
+                ".".
+                $entry->get_value("zonename").
+                ",".
+                $port.
+                ",".
+                $prio;
+
+        print SRVS $srvrecord."\n";
+    }
 }
