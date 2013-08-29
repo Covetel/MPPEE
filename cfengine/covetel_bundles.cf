@@ -1,0 +1,24 @@
+bundle edit_line parameters(param) {
+    vars:
+        "parameter_name" slist => getindices("$(param)");
+
+    delete_lines:
+        "$(parameter_name).*";
+
+    insert_lines:
+        "$(parameter_name) = $($(param)[$(parameter_name)])";
+}
+
+body action log {
+    log_level => "inform";
+}
+
+body contain exec_user(u) {
+    exec_owner => "$(u)";
+}
+
+bundle agent give_perms(user, group, file) {
+    commands:
+        "/bin/chown -R $(user):$(group) $(file)"
+        classes => if_repaired("perms_given");
+}
