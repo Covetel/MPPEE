@@ -116,6 +116,8 @@ sub txtrecord {
     foreach my $txt ( $entry->get_value("txtrecord") ) {
         my $zone;
 
+        $txt =~ s/[\",\']//g;
+
         if ( $entry->get_value("relativedomainname") eq "@" ) {
             $zone = $entry->get_value("zonename");
         }else{
