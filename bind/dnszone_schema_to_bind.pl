@@ -8,7 +8,7 @@ use Data::Dumper;
 my $ld =  shift || "/home/aphu/Documents/Covetel/MPPEE/MPPEE-Covetel/dns.ldif";
 
 #my $prefix = "/etc/bind";
-my $prefix = "/home/aphu/Documents/Covetel/MPPEE/dnsmasq";
+my $prefix = "/home/aphu/Documents/Covetel/MPPEE/bind/examples";
 my $named = $prefix."/named.conf.zones";
 
 my @zones;
@@ -44,6 +44,8 @@ sub build_zones {
             }
             push (@named_zones, $zone);
             push (@zones, $entry->get_value('zonename'));
+        }else{
+            &populate_zone($entry);
         }
     }
 }
@@ -83,6 +85,16 @@ sub populate_zone {
                 $entry->get_value('relativeDomainName')."   ".$entry->get_value('dnsclass')."  PTR  ".$soa[0]."\n".
                 $entry->get_value('relativeDomainName')."   ".$entry->get_value('dnsclass')."  MX  ".$entry->get_value('mxrecord')."\n";
                 print ARPA @records;
+        }else{
+            my @records;
+            $entry->get_value('zonename') =~ m/^(.*)\.(.*)\.(.*)\.(in-addr.arpa)/;
+            if ( $entry->get_value('ptrrecord') ) {
+                my @ptrs = map { $_ } $entry->get_value('ptrrecord'); 
+                foreach my $ptr (@ptrs) {
+                    push(@records, $2.".".$1.".".$entry->get_value('relativeDomainName')."    ".$entry->get_value('dnsclass')."  PTR  ".$ptr."\n");
+                }
+            }
+            print ARPA @records;
         }
         close ARPA;
     }else{
@@ -115,6 +127,24 @@ sub populate_zone {
                 $entry->get_value('relativeDomainName')."   ".$entry->get_value('dnsclass')."  PTR  ".$soa[0]."\n".
                 $entry->get_value('relativeDomainName')."   ".$entry->get_value('dnsclass')."  MX  ".$entry->get_value('mxrecord')."\n");
                 print ZONE @records;
+        }else{
+            my @records;
+            if ( $entry->get_value('cnamerecord') ) {
+                my @cnames = map { $_ } $entry->get_value('cnamerecord'); 
+                foreach my $cname (@cnames) {
+                    push(@records, $cname."    IN  CNAME  ".$entry->get_value('relativedomainname')."\n");
+                }
+            }
+            if ( $entry->get_value('arecord') ) {
+                push(@records, $entry->get_value('relativeDomainName')."    IN  A  ".$entry->get_value('arecord')."\n");
+            }
+            if ( $entry->get_value('mxrecord') ) {
+                my @mxs = map { $_ } $entry->get_value('mxrecord'); 
+                foreach my $mx (@mxs) {
+                    push(@records, $entry->get_value('relativeDomainName')."    IN  MX  ".$mx."\n");
+                }
+            }
+            print ZONE @records;
         }
         close ZONE;
     }
