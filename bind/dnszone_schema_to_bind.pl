@@ -26,9 +26,9 @@ while ( not $ldif->eof() ) {
 
 }
 
-#open NAMED, ">>", $named || die "Error $!";
-#print NAMED @named_zones;
-#close NAMED;
+open NAMED, ">>", $named || die "Error $!";
+print NAMED @named_zones;
+close NAMED;
 
 sub build_zones {
     my ($entry) = shift;
@@ -36,10 +36,10 @@ sub build_zones {
         unless ($entry->get_value('zonename') ~~ @zones) {
             my $zone;
             if ($entry->get_value('zonename') =~ m/^(.*)\.(.*)\.(in-addr.arpa)/) {
-                $zone = 'zone "'.$2.".".$3.'" {'."\n\ttype master;\n\tfile ".&gen_file($entry->get_value('zonename'))."\n }";
+                $zone = 'zone "'.$2.".".$3.'" {'."\n\ttype master;\n\tfile ".&gen_file($entry->get_value('zonename'))."\n};\n\n";
                 &populate_zone($entry);
             }else{
-                $zone = 'zone "'.$entry->get_value('zonename').'" {'."\n\ttype master;\n\tfile ".&gen_file($entry->get_value('zonename'))."\n }";
+                $zone = 'zone "'.$entry->get_value('zonename').'" {'."\n\ttype master;\n\tfile ".&gen_file($entry->get_value('zonename'))."\n};\n\n";
                 &populate_zone($entry);
             }
             push (@named_zones, $zone);
