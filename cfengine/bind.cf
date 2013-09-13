@@ -1,0 +1,89 @@
+bundle agent bind {
+
+vars:
+    "prefix" string => "/etc/bind";
+    "desired_packages" slist => { "bind9" };
+
+    # Variables for /etc/bind/named.conf
+    "named_conf_lines_to_delete" slist => {
+        "include \"/etc/bind/named.conf.options\";",
+        "include \"/etc/bind/named.conf.local\";",
+    };
+
+    "named_conf" slist => {
+        "include  \"/etc/bind/named.conf.zones\";",
+    };
+
+
+    # Template for /etc/bind/named.conf.zones file
+    "named_zones" string => "
+zone \"200.in-addr.arpa\" {
+        type master;
+        file /home/aphu/Documents/Covetel/MPPEE/bind/examples/db.200
+};
+
+zone \"216.in-addr.arpa\" {
+        type master;
+        file /home/aphu/Documents/Covetel/MPPEE/bind/examples/db.216
+};
+
+zone \"fidelz.org.ve\" {
+        type master;
+        file /home/aphu/Documents/Covetel/MPPEE/bind/examples/fidelz.org.ve.zone
+};
+
+zone \"mppee.gob.ve\" {
+        type master;
+        file /home/aphu/Documents/Covetel/MPPEE/bind/examples/mppee.gob.ve.zone
+};
+
+zone \"opsis.org.ve\" {
+        type master;
+        file /home/aphu/Documents/Covetel/MPPEE/bind/examples/opsis.org.ve.zone
+};
+";
+
+packages:
+    "$(desired_packages)"
+        package_policy => "add",
+        package_method => apt,
+        classes => if_ok("bind_installed"),
+        action => "log";
+
+classes:
+
+files:
+    bind_installed::
+        "$(prefix)/named.conf"
+            create => "true",
+            edit_line =>  comment_lines_matching("$(named_conf_lines_to_delete)", "#"),
+            classes => if_repaired("bind_configured"),
+            action => "log";
+
+        "$(prefix)/named.conf"
+            create => "true",
+            edit_line => append_if_no_lines("$(named_conf)"),
+            classes => if_repaired("bind_configured"),
+            action => "log";
+
+        "$(prefix)/named.conf.zones"
+            create => "true",
+            edit_line => insert_lines("$(named_zones)"),
+            edit_defaults => empty, 
+            classes => if_repaired("bind_configured"),
+            action => "log";
+
+commands:
+	bind_configured::
+		"/etc/init.d/bind restart"
+            handle  =>  "restart bind",
+            comment =>  "Reiniciando el bind",
+            classes =>  if_repaired("done");
+
+reports:
+    bind_installed::
+        "bind Installed";
+
+    bind_configured::
+        "bind configured";
+}
