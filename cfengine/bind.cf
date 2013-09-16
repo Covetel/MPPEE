@@ -27,27 +27,27 @@ vars:
     "named_zones" string => "
 zone \"200.in-addr.arpa\" {
         type master;
-        file /etc/bind/db.200
+        file  \"/etc/bind/db.200\";
 };
 
 zone \"216.in-addr.arpa\" {
         type master;
-        file /etc/bind/db.216
+        file \"/etc/bind/db.216\";
 };
 
 zone \"fidelz.org.ve\" {
         type master;
-        file /etc/bind/fidelz.org.ve.zone
+        file \"/etc/bind/fidelz.org.ve.zone\";
 };
 
 zone \"mppee.gob.ve\" {
         type master;
-        file /etc/bind/mppee.gob.ve.zone
+        file \"/etc/bind/mppee.gob.ve.zone\";
 };
 
 zone \"opsis.org.ve\" {
         type master;
-        file /etc/bind/opsis.org.ve.zone
+        file \"/etc/bind/opsis.org.ve.zone\";
 };
 ";
 
@@ -91,7 +91,7 @@ zone \"opsis.org.ve\" {
     # Template for /etc/bind/fidelz.org.ve.zone file
     "fidelz" string => "$ORIGIN .
 $TTL    7200
-fidelz.org.ve   IN  SOA  ns1 hostmaster (
+fidelz.org.ve   IN  SOA  ns1.mppee.gob.ve. hostmaster.mppee.gob.ve. (
         2013052701 ; Serial
         3600 ; Refresh
         1800 ; Retry
@@ -104,12 +104,12 @@ $ORIGIN fidelz.org.ve
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1
 @   IN  MX  10 smtp01
-www    IN  CNAME  fildelz_website
-fildelz_website    IN  A  200.1.12.201
-imap01    IN  CNAME  imap
-smtp01    IN  CNAME  smtp
+www    IN  A  200.1.12.201
+imap01    IN  CNAME  imap.mppee.gob.ve.
+smtp01    IN  CNAME  smtp.mppee.gob.ve.
 fidelz_website    IN  CNAME  www
-www    IN  A  200.1.12.201";
+;fildelz_website    IN  A  200.1.12.201
+;www    IN  CNAME  fildelz_website";
 
     # Template for /etc/bind/mppee.gob.ve.zone file
     "mppee" string => "$ORIGIN .
@@ -130,40 +130,40 @@ $ORIGIN mppee.gob.ve
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1.mppee.gob.ve.
 @   IN  MX  10 smtp01.mppee.gob.ve.
+ns1    IN  A  200.1.12.201
+ns2    IN  A  200.1.12.202
+smtp01    IN  A  200.1.12.200
+webmail    IN  A  200.1.12.209
+www    IN  A  200.1.12.201
 7o    IN  A  200.1.12.203
 acsi    IN  A  200.1.12.205
 congresoureerpp    IN  A  200.1.12.211
-mesatrabajo    IN  CNAME  corpoelecindustrial
-mesadetrabajos    IN  CNAME  corpoelecindustrial
-mesadetrabajo    IN  CNAME  corpoelecindustrial
 corpoelecindustrial    IN  A  200.1.12.232
 correo    IN  A  200.1.12.201
 documentos    IN  A  200.1.12.206
 dvscse    IN  A  200.1.12.207
 extranet    IN  A  200.1.12.202
-ns1    IN  A  200.1.12.201
-ns2    IN  A  200.1.12.202
 ovpn    IN  A  200.1.12.201
 proyectosatit    IN  A  200.1.12.208
-ovpn    IN  CNAME  registrocongresouree
-mail    IN  CNAME  registrocongresouree
 registrocongresouree    IN  A  200.1.12.201
 sie    IN  A  200.1.12.204
+mesatrabajo    IN  CNAME  corpoelecindustrial
+mesadetrabajos    IN  CNAME  corpoelecindustrial
+mesadetrabajo    IN  CNAME  corpoelecindustrial
 smtp    IN  CNAME  smtp01
 mx01    IN  CNAME  smtp01
 imap01    IN  CNAME  smtp01
 imap    IN  CNAME  smtp01
-smtp01    IN  A  200.1.12.200
-www.mppee.gob.ve.    IN  CNAME  webgraphs
-webmail    IN  A  200.1.12.209
-ovpn    IN  CNAME  www
-mail    IN  CNAME  www
-www    IN  A  200.1.12.201";
+mail    IN  CNAME  registrocongresouree
+;ovpn    IN  CNAME  registrocongresouree
+;www.mppee.gob.ve.    IN  CNAME  webgraphs
+;ovpn    IN  CNAME  www
+;mail    IN  CNAME  www";
 
     # Template for /etc/bind/opsis.org.ve.zone file
     "opsis" string => "$ORIGIN .
 $TTL    7200
-opsis.org.ve   IN  SOA  ns1 hostmaster (
+opsis.org.ve  IN  SOA ns1.mppee.gob.ve. hostmaster.mppee.gob.ve.  (
         2010070901 ; Serial
         3600 ; Refresh
         1800 ; Retry
@@ -174,7 +174,7 @@ $ORIGIN opsis.org.ve
 
 @   IN  NS  ns1.mppee.gob.ve.
 @   IN  NS  ns2.mppee.gob.ve.
-@   IN  PTR  ns1
+@   IN  PTR  ns1.mppee.gob.ve.
 @   IN  MX  10 smtp01
 smtp01    IN  A  216.72.46.131
 www    IN  A  200.1.10.106";
@@ -205,6 +205,7 @@ files:
             action => "log";
 
         "$(prefix)/named.conf.zones"
+            perms => bind,
             create => "true",
             edit_line => insert_lines("$(named_zones)"),
             edit_defaults => empty, 
@@ -212,6 +213,7 @@ files:
             action => "log";
 
         "$(prefix)/db.200"
+            perms => bind,
             create => "true",
             edit_line => insert_lines("$(db_200)"),
             edit_defaults => empty, 
@@ -219,6 +221,7 @@ files:
             action => "log";
 
         "$(prefix)/db.216"
+            perms => bind,
             create => "true",
             edit_line => insert_lines("$(db_216)"),
             edit_defaults => empty, 
@@ -226,6 +229,7 @@ files:
             action => "log";
 
         "$(prefix)/fidelz.org.ve.zone"
+            perms => bind,
             create => "true",
             edit_line => insert_lines("$(fidelz)"),
             edit_defaults => empty, 
@@ -233,6 +237,7 @@ files:
             action => "log";
 
         "$(prefix)/mppee.gob.ve.zone"
+            perms => bind,
             create => "true",
             edit_line => insert_lines("$(mppee)"),
             edit_defaults => empty, 
@@ -240,6 +245,7 @@ files:
             action => "log";
 
         "$(prefix)/opsis.org.ve.zone"
+            perms => bind,
             create => "true",
             edit_line => insert_lines("$(opsis)"),
             edit_defaults => empty, 
@@ -265,4 +271,8 @@ reports:
 
     bind_configured::
         "bind configured";
+}
+
+body perms bind {
+    mode => "644";
 }
