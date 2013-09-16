@@ -1,2 +1,2 @@
-internal_dns = dns 
+internal_dns = dns
 external_dns = bind
