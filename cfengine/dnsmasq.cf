@@ -1,8 +1,17 @@
 bundle agent dnsmasq {
 
 vars:
+    #Read configuration file
+    "match" int => readstringarray("var","$(sys.workdir)/inputs/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
+
+    #External DNS Variables
+    "hostname_internal_dns" string => "$(var[internal_dns][1])";
+
     "prefix" string => "/etc";
     "desired_packages" slist => { "dnsmasq" };
+
+    # Variables for /etc/bind/named.conf
+    "resolv" string => "nameserver 127.0.0.1";
 
     # Variables for /etc/dnsmasq.conf file
     "dnsmasq[user]" string => "root";
@@ -270,8 +279,8 @@ cname=auditoria,caracas
 cname=auditoriaprueba,wagner
 cname=cas-cen,sapyc
 cname=compras,faraday
-cname=corpoelecindustrial,mesadetrabajos
-cname=corpoelecindustrial,mesadetrabajo
+#cname=corpoelecindustrial,mesadetrabajos
+#cname=corpoelecindustrial,mesadetrabajo
 cname=corpoelecindustrial,mesatrabajo
 cname=correo,webmail
 cname=divisionbell-dashboard,divisionbell-db
@@ -474,13 +483,15 @@ srv-host=_ldap._tcp.mppee.gob.ve,ldap.mppee.gob.ve,389,100";
         };
 
 packages:
-    "$(desired_packages)"
-        package_policy => "add",
-        package_method => apt,
-        classes => if_ok("dnsmasq_installed"),
-        action => "log";
+    internal_dns::
+        "$(desired_packages)"
+            package_policy => "add",
+            package_method => apt,
+            classes => if_ok("dnsmasq_installed"),
+            action => "log";
 
 classes:
+    "internal_dns" expression => classmatch("$(hostname_internal_dns)");
 
 files:
     dnsmasq_installed::
@@ -516,6 +527,12 @@ files:
           create => "true",
           edit_line => append_if_no_lines("$(srv)"),
           edit_defaults => empty,
+          classes => if_repaired("dnsmasq_configured"),
+          action => "log";
+
+      "$(prefix)/resolv.conf"
+          create => "true",
+          edit_line => insert_lines("$(resolv)"),
           classes => if_repaired("dnsmasq_configured"),
           action => "log";
 
