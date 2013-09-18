@@ -65,12 +65,12 @@ zone \"opsis.org.ve\" {
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1.mppee.gob.ve.
 @   IN  MX  10 smtp01.mppee.gob.ve.
-1.12.131    IN  PTR  smtp01.mppee.gob.ve.
-1.12.131    IN  PTR  mx01.mppee.gob.ve.
-1.12.200    IN  PTR  smtp01.mppee.gob.ve.
-1.12.200    IN  PTR  mx01.mppee.gob.ve.
-1.12.201    IN  PTR  ns1.mppee.gob.ve.
-1.12.202    IN  PTR  ns2.mppee.gob.ve.";
+131.12.1  IN  PTR  smtp01.mppee.gob.ve.
+131.12.1  IN  PTR  mx01.mppee.gob.ve.
+200.12.1  IN  PTR  smtp01.mppee.gob.ve.
+200.12.1  IN  PTR  mx01.mppee.gob.ve.
+201.12.1  IN  PTR  ns1.mppee.gob.ve.
+202.12.1  IN  PTR  ns2.mppee.gob.ve.
 
     # Template for /etc/bind/db.216 file
     "db_216" string => "$TTL    3600
@@ -86,7 +86,7 @@ zone \"opsis.org.ve\" {
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1.mppee.gob.ve.
 @   IN  MX  10 smtp01.mppee.gob.ve.
-; 72.128-159.46.131    IN  PTR  smtp01.mppee.gob.ve.";
+; 131.128-159.46.72    IN  PTR  smtp01.mppee.gob.ve.";
 
     # Template for /etc/bind/fidelz.org.ve.zone file
     "fidelz" string => "$ORIGIN .
