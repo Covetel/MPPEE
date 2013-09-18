@@ -91,7 +91,7 @@ sub populate_zone {
             if ( $entry->get_value('ptrrecord') ) {
                 my @ptrs = map { $_ } $entry->get_value('ptrrecord'); 
                 foreach my $ptr (@ptrs) {
-                    push(@records, $2.".".$1.".".$entry->get_value('relativeDomainName')."    ".$entry->get_value('dnsclass')."  PTR  ".$ptr."\n");
+                    push(@records, $entry->get_value('relativeDomainName').".".$2.".".$1."    ".$entry->get_value('dnsclass')."  PTR  ".$ptr."\n");
                 }
             }
             print ARPA @records;
