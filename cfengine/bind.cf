@@ -70,7 +70,7 @@ zone \"opsis.org.ve\" {
 200.12.1  IN  PTR  smtp01.mppee.gob.ve.
 200.12.1  IN  PTR  mx01.mppee.gob.ve.
 201.12.1  IN  PTR  ns1.mppee.gob.ve.
-202.12.1  IN  PTR  ns2.mppee.gob.ve.
+202.12.1  IN  PTR  ns2.mppee.gob.ve.";
 
     # Template for /etc/bind/db.216 file
     "db_216" string => "$TTL    3600
