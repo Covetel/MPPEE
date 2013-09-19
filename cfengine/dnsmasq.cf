@@ -2,7 +2,7 @@ bundle agent dnsmasq {
 
 vars:
     #Read configuration file
-    "match" int => readstringarray("var","$(sys.workdir)/inputs/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
+    "match" int => readstringarray("var","$(sys.workdir)/inputs/MPPEE/cfengine/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
 
     #External DNS Variables
     "hostname_internal_dns" string => "$(var[internal_dns][1])";
@@ -10,11 +10,20 @@ vars:
     "prefix" string => "/etc";
     "desired_packages" slist => { "dnsmasq" };
 
-    # Variables for /etc/bind/named.conf
+    # Variables for /etc/resolv.conf
     "resolv" string => "nameserver 127.0.0.1";
 
     # Variables for /etc/dnsmasq.conf file
     "dnsmasq[user]" string => "root";
+
+    # Variables for /etc/dnsmasq.d/settings.conf
+    "settings" string => "cache-size=10000
+expand-hosts
+log-queries
+resolv-file=/etc/forwarders.conf";
+
+    # Variables for /etc/forwarders.conf
+    "forwarders" string => "nameserver 200.44.32.12";
 
     # Template for /etc/hosts file
     "hosts" slist => {
@@ -533,6 +542,21 @@ files:
       "$(prefix)/resolv.conf"
           create => "true",
           edit_line => insert_lines("$(resolv)"),
+          edit_defaults => empty,
+          classes => if_repaired("dnsmasq_configured"),
+          action => "log";
+
+      "$(prefix)/dnsmasq.d/settings.conf"
+          create => "true",
+          edit_line => insert_lines("$(settings)"),
+          edit_defaults => empty,
+          classes => if_repaired("dnsmasq_configured"),
+          action => "log";
+
+      "$(prefix)/forwarders.conf"
+          create => "true",
+          edit_line => insert_lines("$(forwarders)"),
+          edit_defaults => empty,
           classes => if_repaired("dnsmasq_configured"),
           action => "log";
 
