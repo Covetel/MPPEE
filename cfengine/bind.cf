@@ -2,7 +2,7 @@ bundle agent bind {
 
 vars:
     #Read configuration file
-    "match" int => readstringarray("var","$(sys.workdir)/inputs/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
+    "match" int => readstringarray("var","$(sys.workdir)/inputs/MPPEE/cfengine/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
 
     #External DNS Variables
     "hostname_external_dns" string => "$(var[external_dns][1])";
