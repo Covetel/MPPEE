@@ -34,7 +34,7 @@ body common control
             "controls/cf_serverd.cf",
 
          # COPBL/Custom libraries.  Eventually this should use wildcards.
-			"cfengine_stdlib.cf",
+			"MPPEE/cfengine/cfengine_stdlib.cf",
             # @(cfengine_stdlib.inputs),
 
          # Design Center
@@ -43,9 +43,9 @@ body common control
 
          # User services from here
             "services/init_msg.cf",
-            "covetel_bundles.cf",
-            "dnsmasq.cf",
-            "bind.cf",
+            "MPPEE/cfengine/covetel_bundles.cf",
+            "MPPEE/cfengine/dnsmasq.cf",
+            "MPPEE/cfengine/bind.cf",
            };
 
  version => "Community Promises.cf 3.4.0";
