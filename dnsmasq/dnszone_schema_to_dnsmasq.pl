@@ -102,9 +102,9 @@ sub cnamerecord {
 
     foreach my $cname ( $entry->get_value("cnamerecord") ) {
         my $cnamerecord = "cname=".
-                $entry->get_value("relativedomainname").
+                $entry->get_value("relativedomainname").".".$entry->get_value("zonename").
                 ",".
-                $cname;
+                $cname.".".$entry->get_value("zonename");
 
         print CNAMES $cnamerecord."\n";
     }
