@@ -1,2 +1,2 @@
-internal_dns = dns
+internal_dns = dnscache
 external_dns = bind
