@@ -188,7 +188,7 @@ packages:
             action => "log";
 
 classes:
-    "external_dns" expression => classmatch("$(hostname_external_dns)");
+    "external_dns" expression => classmatch("$(hostname_external_dns).*");
 
 files:
     bind_installed::

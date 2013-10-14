@@ -500,7 +500,7 @@ packages:
             action => "log";
 
 classes:
-    "internal_dns" expression => classmatch("$(hostname_internal_dns)");
+    "internal_dns" expression => classmatch("$(hostname_internal_dns).*");
 
 files:
     dnsmasq_installed::
