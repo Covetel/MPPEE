@@ -22,3 +22,58 @@ bundle agent give_perms(user, group, file) {
         "/bin/chown -R $(user):$(group) $(file)"
         classes => if_repaired("perms_given");
 }
+
+bundle agent non_standard_services(service,state) {
+  reports:
+    !done::
+        "Test service promise for \"$(service)\" -> $(state)";
+
+  vars:
+    linux::
+        "startcommand[slapd]"   string => "/etc/init.d/slapd start";
+        "restartcommand[slapd]" string => "/etc/init.d/slapd restart";
+        "reloadcommand[slapd]"  string => "/etc/init.d/slapd reload";
+        "stopcommand[slapd]"    string => "/etc/init.d/slapd stop";
+        "pattern[slapd]"        string => ".*slapd.*";
+
+        "startcommand[isc-dhcp-server]"   string => "/etc/init.d/isc-dhcp-server start";
+        "restartcommand[isc-dhcp-server]" string => "/etc/init.d/isc-dhcp-server restart";
+        "reloadcommand[isc-dhcp-server]"  string => "/etc/init.d/isc-dhcp-server reload";
+        "stopcommand[isc-dhcp-server]"    string => "/etc/init.d/isc-dhcp-server stop";
+        "pattern[isc-dhcp-server]"        string => ".*isc-dhcp-server.*";
+
+  classes:
+      "start" expression => strcmp("start","$(state)"),
+          comment => "Check if to start a service";
+      "restart" expression => strcmp("restart","$(state)"),
+          comment => "Check if to restart a service";
+      "reload" expression => strcmp("reload","$(state)"),
+          comment => "Check if to reload a service";
+      "stop"  expression => strcmp("stop","$(state)"),
+          comment => "Check if to stop a service";
+
+  processes:
+      start::
+          "$(pattern[$(service)])" ->  { "@(stakeholders[$(service)])" }
+              comment => "Verify that the service appears in the process table",
+              restart_class => "start_$(service)";
+
+      stop::
+          "$(pattern[$(service)])" -> { "@(stakeholders[$(service)])" }
+              comment => "Verify that the service does not appear in the process",
+              process_stop => "$(stopcommand[$(service)])",
+              signals => { "term", "kill"};
+
+  commands:
+      "$(startcommand[$(service)])" -> { "@(stakeholders[$(service)])" }
+          comment => "Execute command to start the $(service) service",
+          ifvarclass => canonify("start_$(service)");
+
+      restart::
+          "$(restartcommand[$(service)])" -> { "@(stakeholders[$(service)])" }
+              comment => "Execute command to restart the $(service) service";
+
+      reload::
+          "$(reloadcommand[$(service)])" -> { "@(stakeholders[$(service)])" }
+              comment => "Execute command to reload the $(service) service";
+}
