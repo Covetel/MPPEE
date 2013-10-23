@@ -1,0 +1,71 @@
+bundle agent dhcp {
+
+vars:
+    #Read configuration file
+    "match" int => readstringarray("var","$(sys.workdir)/inputs/MPPEE/cfengine/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
+
+    "conf" int => readstringarray("dhcp","$(sys.workdir)/inputs/MPPEE/cfengine/conf_servers.txt","\s*#[^\n]*"," = ",80,8000);
+
+    #External DNS Variables
+    "hostname_dhcp" string => "$(var[dhcp][1])";
+
+    "prefix" string => "/etc/dhcp";
+    "desired_packages" slist => { "isc-dhcp-server" };
+
+    "dhcpd" string => "ldap-server $(dhcp[dhcp_ldap_server][1]);
+ldap-port $(dhcp[dhcp_ldap_port][1]);
+ldap-username $(dhcp[dhcp_ldap_username][1]);
+ldap-password $(dhcp[dhcp_ldap_password][1]);
+ldap-base-dn $(dhcp[dhcp_ldap_base_dn][1]);
+ldap-dhcp-server-cn $(dhcp[dhcp_ldap_dhcp_server_cn][1]);
+ldap-method $(dhcp[dhcp_ldap_method][1]);
+ldap-debug-file $(dhcp[dhcp_ldap_debug_file][1])";
+
+packages:
+    dhcp::
+        "$(desired_packages)"
+            package_policy => "add",
+            package_method => apt,
+            classes => if_ok("dhcp_installed"),
+            action => "log";
+
+classes:
+    "dhcp" expression => classmatch("$(hostname_dhcp).*");
+    "dhcp_ready" or => {"dhcp_configured", "dhcp_installed"};
+
+services:
+    dhcp_ready::
+      "isc-dhcp-server"
+          service_policy => "start",
+          service_method => dhcp,
+          classes => if_repaired("running");
+
+files:
+    dhcp_installed::
+        "$(prefix)/dhcpd.conf"
+            create => "true",
+            edit_line => insert_lines("$(dhcpd)"),
+            edit_defaults => empty, 
+            classes => if_repaired("dhcp_configured"),
+            action => "log";
+        
+
+commands:
+	dhcp_configured::
+		"/etc/init.d/isc-dhcp-server restart"
+            handle  =>  "restart dhcp",
+            comment =>  "Reiniciando el dhcp",
+            classes =>  if_repaired("done");
+
+reports:
+    dhcp_installed::
+        "DHCP Installed";
+
+    dhcp_configured::
+        "DHCP configured";
+}
+
+body service_method dhcp
+{
+      service_bundle => non_standard_services("$(this.promiser)","$(this.service_policy)");
+}
