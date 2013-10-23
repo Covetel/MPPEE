@@ -1,0 +1,8 @@
+dhcp_ldap_server = "127.0.0.1"
+dhcp_ldap_port = 389;
+dhcp_ldap_username = "cn=admin,dc=mppee,dc=gob,dc=ve"
+dhcp_ldap_password = "123321..."
+dhcp_ldap_base_dn = "ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve"
+dhcp_ldap_dhcp_server_cn = "MPPEE_Server"
+dhcp_ldap_method = static
+dhcp_ldap_debug_file = "/var/log/dhcp_ldap_startup.log"
