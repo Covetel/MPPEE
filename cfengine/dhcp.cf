@@ -19,7 +19,7 @@ ldap-password $(dhcp[dhcp_ldap_password][1]);
 ldap-base-dn $(dhcp[dhcp_ldap_base_dn][1]);
 ldap-dhcp-server-cn $(dhcp[dhcp_ldap_dhcp_server_cn][1]);
 ldap-method $(dhcp[dhcp_ldap_method][1]);
-ldap-debug-file $(dhcp[dhcp_ldap_debug_file][1])";
+ldap-debug-file $(dhcp[dhcp_ldap_debug_file][1]);";
 
 packages:
     dhcp::
@@ -65,7 +65,6 @@ reports:
         "DHCP configured";
 }
 
-body service_method dhcp
-{
+body service_method dhcp {
       service_bundle => non_standard_services("$(this.promiser)","$(this.service_policy)");
 }
