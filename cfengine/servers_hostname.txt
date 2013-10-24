@@ -1,3 +1,4 @@
 internal_dns = dnscache
 external_dns = bind
 dhcp = dhcp
+dhcp_ldap = dhcp
