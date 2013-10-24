@@ -19,7 +19,9 @@ body common control
                     "main",
                     "dnsmasq",
                     "bind",
+                    "make_pressed",
                     "dhcp",
+                    "dhcp_ldap",
                    };
 
  inputs => {
@@ -47,7 +49,9 @@ body common control
             "MPPEE/cfengine/covetel_bundles.cf",
             "MPPEE/cfengine/dnsmasq.cf",
             "MPPEE/cfengine/bind.cf",
+            "MPPEE/cfengine/services-pressed.cf",
             "MPPEE/cfengine/dhcp.cf",
+            "MPPEE/cfengine/dhcp_ldap.cf",
            };
 
  version => "Community Promises.cf 3.4.0";
