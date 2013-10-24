@@ -1,0 +1,86 @@
+bundle agent dhcp_ldap {
+
+vars:
+    #Read configuration file
+    "match" int => readstringarray("var","$(sys.workdir)/inputs/MPPEE/cfengine/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
+
+    #External DNS Variables
+    "hostname_dhcp_ldap" string => "$(var[dhcp_ldap][1])";
+
+    "prefix" string => "/etc/dhcp";
+    "desired_packages" slist => { "isc-dhcp-server-ldap", "slapd", "ldap-utils" };
+
+    "dhcp_schema" string => "include /etc/ldap/schema/dhcp.schema";
+
+packages:
+    install_dhcp_ldap::
+        "$(desired_packages)"
+            package_policy => "add",
+            package_method => apt,
+            classes => if_ok("dhcp_ldap_installed"),
+            action => "log";
+
+classes:
+    "dhcp_ldap" expression => classmatch("$(hostname_dhcp_ldap).*");
+    "dhcp_ldap_ready" or => {"schemas_ready", "dhcp_ldap_installed"};
+    "install_dhcp_ldap" and => {"dhcp_ldap", "install_ldap"};
+
+services:
+    dhcp_ldap_ready::
+        "slapd"
+            service_policy => "start",
+            service_method => dhcp_ldap,
+            classes => if_repaired("ldap_running");
+
+files:
+    schemas_convert_file_make::
+        "/tmp/schema_convert.conf"
+            edit_line => insert_lines("$(dhcp_schema)"),
+            classes => if_ok("dhcp_schema_included");
+
+commands:
+    dhcp_ldap_installed:: 
+        "/bin/cp /usr/share/doc/isc-dhcp-server-ldap/dhcp.schema.gz /etc/ldap/schema/"
+            classes => if_repaired("schema_copy");
+        schema_copy::
+            "/bin/gunzip /etc/ldap/schema/dhcp.schema.gz"
+                classes => if_repaired("schema_uncompress");
+        schema_uncompress::
+            "/bin/mkdir /tmp/out"
+                classes => if_repaired("out_directory_make");
+        out_directory_make::
+            "/usr/bin/perl -e '`/bin/ls /etc/ldap/slapd.d/cn=config/cn=schema/ >/tmp/schema_convert.conf`'"
+                classes => if_repaired("used_schemas");
+        used_schemas::
+            "/usr/bin/perl -pi -e 's/^cn={.}(.*).ldif$/include \/etc\/ldap\/schema\/\1.schema/g' /tmp/schema_convert.conf"
+                classes => if_repaired("schemas_convert_file_make");
+        dhcp_schema_included::
+            "/usr/sbin/slaptest -f /tmp/schema_convert.conf -F /tmp/out/"
+                classes => if_repaired("schemas_convert");
+        schemas_convert::
+            "/usr/bin/perl -e '`/bin/cp /tmp/out/cn=config/cn=schema/* /etc/ldap/slapd.d/cn=config/cn=schema/`'"
+                classes => if_repaired("schemas_convert_copy");
+        schemas_convert_copy::
+            "/usr/bin/perl -e '`/bin/chown openldap:openldap /etc/ldap/slapd.d/cn=config/cn=schema/*`'"
+                classes => if_repaired("schemas_ready");
+        schemas_ready::
+            "/etc/init.d/slapd restart"
+                handle  =>  "Restart LDAP",
+                comment =>  "Reiniciando LDAP",
+                classes =>  if_repaired("done");
+            
+    
+reports:
+    dhcp_ldap_installed::
+        "DHCP LDAP Installed";
+    schemas_ready::
+        "DHCP schemas installed";
+    !ldap_running::
+        "Verifique la configuración del LDAP el servicio no esta arriba";
+    done::
+        "LDAP en funcionamiento con schemas DHCP";
+}
+
+body service_method dhcp_ldap {
+      service_bundle => non_standard_services("$(this.promiser)","$(this.service_policy)");
+}
