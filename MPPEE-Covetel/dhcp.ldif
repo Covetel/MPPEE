@@ -10,11 +10,11 @@
 version: 1
 
 # Entry 1: cn=10.1.5.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,...
-dn: cn=10.1.5.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.1.5.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.1.5.0
 dhcpnetmask: 24
 dhcpoption: routers 10.1.5.1
+#dhcpoption: subnet-mask 255.255.255.0
 dhcpstatements: next-server 10.1.5.121
 dhcpstatements: filename "pxelinux.0"
 objectclass: dhcpSubnet
@@ -22,8 +22,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 2: cn=10.16.52.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppe...
-dn: cn=10.16.52.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.16.52.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.16.52.0
 dhcpnetmask: 24
 dhcpoption: routers 10.16.52.254
@@ -32,8 +31,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 3: cn=10.2.0.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,...
-dn: cn=10.2.0.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.0.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.0.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.0.1
@@ -42,8 +40,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 4: cn=10.2.1.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,...
-dn: cn=10.2.1.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.1.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.1.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.1.1
@@ -52,8 +49,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 5: cn=10.2.100.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppe...
-dn: cn=10.2.100.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.100.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.100.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.100.1
@@ -62,8 +58,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 6: cn=10.2.102.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppe...
-dn: cn=10.2.102.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.102.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.102.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.102.1
@@ -72,8 +67,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 7: cn=10.2.103.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppe...
-dn: cn=10.2.103.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.103.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.103.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.103.1
@@ -82,8 +76,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 8: cn=10.2.104.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppe...
-dn: cn=10.2.104.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.104.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.104.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.104.1
@@ -102,8 +95,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 10: cn=10.2.106.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.2.106.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.106.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.106.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.106.1
@@ -112,8 +104,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 11: cn=10.2.107.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.2.107.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.107.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.107.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.107.1
@@ -122,8 +113,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 12: cn=10.2.108.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.2.108.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.108.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.108.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.108.1
@@ -132,8 +122,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 13: cn=10.2.112.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.2.112.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.2.112.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.112.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.112.1
@@ -142,8 +131,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 14: cn=10.2.17.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppe...
-dn: cn=10.2.17.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc
- =ve
+dn: cn=10.2.17.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.17.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.17.254
@@ -152,8 +140,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 15: cn=10.2.2.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee...
-dn: cn=10.2.2.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.2.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.2.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.2.1
@@ -162,8 +149,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 16: cn=10.2.29.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppe...
-dn: cn=10.2.29.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc
- =ve
+dn: cn=10.2.29.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.29.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.29.1
@@ -171,8 +157,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 17: cn=10.2.3.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee...
-dn: cn=10.2.3.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.3.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.3.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.3.1
@@ -180,8 +165,7 @@ objectclass: dhcpSubnet
 objectclass: top
 
 # Entry 18: cn=10.2.4.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee...
-dn: cn=10.2.4.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.4.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.4.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.4.1
@@ -191,8 +175,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 19: cn=10.2.5.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee...
-dn: cn=10.2.5.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.5.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.5.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.5.1
@@ -201,8 +184,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 20: cn=10.2.6.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee...
-dn: cn=10.2.6.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.6.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.6.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.6.1
@@ -211,8 +193,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 21: cn=10.2.7.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee...
-dn: cn=10.2.7.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.7.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.7.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.7.1
@@ -221,8 +202,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 22: cn=10.2.8.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee...
-dn: cn=10.2.8.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=
- ve
+dn: cn=10.2.8.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.2.8.0
 dhcpnetmask: 24
 dhcpoption: routers 10.2.8.1
@@ -231,8 +211,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 23: cn=10.200.10.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.10.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.10.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.10.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.10.1
@@ -241,8 +220,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 24: cn=10.200.11.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.11.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.11.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.11.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.11.1
@@ -251,8 +229,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 25: cn=10.200.12.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.12.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.12.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.12.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.12.1
@@ -262,8 +239,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 26: cn=10.200.13.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.13.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.13.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.13.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.13.1
@@ -272,8 +248,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 27: cn=10.200.14.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.14.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.14.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.14.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.14.1
@@ -282,8 +257,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 28: cn=10.200.15.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.15.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.15.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.15.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.15.252
@@ -292,8 +266,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 29: cn=10.200.16.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.16.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.16.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.16.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.16.1
@@ -302,8 +275,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 30: cn=10.200.17.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.17.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.17.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.17.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.17.254
@@ -312,8 +284,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 31: cn=10.200.18.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.18.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.18.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.18.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.18.1
@@ -322,8 +293,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 32: cn=10.200.22.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.22.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.22.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.22.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.22.1
@@ -332,8 +302,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 33: cn=10.200.23.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.23.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.23.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.23.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.23.1
@@ -342,8 +311,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 34: cn=10.200.28.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.28.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.28.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.28.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.28.1
@@ -352,8 +320,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 35: cn=10.200.3.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.200.3.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.200.3.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.3.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.3.1
@@ -366,8 +333,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 36: cn=10.200.57.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.57.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.57.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.57.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.57.1
@@ -376,8 +342,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 37: cn=10.200.6.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.200.6.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.200.6.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.6.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.6.1
@@ -386,8 +351,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 38: cn=10.200.7.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.200.7.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.200.7.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.7.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.7.1
@@ -396,8 +360,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 39: cn=10.200.8.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.200.8.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.200.8.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.8.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.8.1
@@ -406,8 +369,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 40: cn=10.200.87.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.87.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.87.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.87.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.87.1
@@ -419,8 +381,7 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 41: cn=10.200.88.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mp...
-dn: cn=10.200.88.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,
- dc=ve
+dn: cn=10.200.88.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.88.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.88.1
@@ -429,12 +390,10 @@ objectclass: top
 objectclass: dhcpOptions
 
 # Entry 42: cn=10.200.9.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mpp...
-dn: cn=10.200.9.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,d
- c=ve
+dn: cn=10.200.9.0,cn=MPPEE,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 cn: 10.200.9.0
 dhcpnetmask: 24
 dhcpoption: routers 10.200.9.1
 objectclass: dhcpSubnet
 objectclass: top
 objectclass: dhcpOptions
-
