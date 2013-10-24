@@ -1,0 +1,60 @@
+bundle agent make_pressed 
+{
+  vars:
+      "pressed_file" string => "/tmp/ldap-preseed.cfg";
+      "pressed" int => readstringarray("var", "$(sys.workdir)/inputs/MPPEE/cfengine/servers_hostname.txt", "\s*#[^\n]*", " = ", 80, 8000);
+      "pressed_conf" int => readstringarray("conf", "$(sys.workdir)/inputs/MPPEE/cfengine/conf_servers.txt", "\s*#[^\n]*", " = ", 80, 8000);
+
+      "hostname_dhcp_ldap" string => "$(var[dhcp_ldap][1])";
+
+  classes:
+      "ldap_server" expression => classmatch("$(hostname_dhcp_ldap).*");
+
+  packages:
+      ldap_server::
+          "slapd"
+              package_policy => "verify",
+              package_method => apt,
+              classes        => if_notkept("slapd");
+  files:
+      slapd::
+          "$(pressed_file)"
+              create    => "true",
+              comment   => "Make preseed for sldapd package",
+              edit_line => ldap_preseed,
+              classes   => if_ok("ldap_preseed_done"),
+              action    => "log";
+
+  commands:
+      ldap_preseed_done::
+          "/usr/bin/debconf-set-selections $(pressed_file)"
+              classes => if_ok("install_ldap");
+
+  reports:
+      ldap_preseed_done::
+          "Slapd preseed done";
+}
+
+bundle edit_line ldap_preseed {
+  vars:
+      "ldap[d-i slapd/no_configuration boolean]"  string => "false";
+      "ldap[d-i slapd/dump_database select]"      string => "never";
+      "ldap[d-i slapd/move_old_database boolean]" string => "false";
+      "ldap[d-i slapd/domain string]"             string => "$(make_pressed.conf[domain][1])";
+      "ldap[d-i shared/organization string]"      string => "$(make_pressed.conf[domain][1])";
+      "ldap[d-i slapd/password1 password]"        string => "$(make_pressed.conf[ldap_pass_admin][1])";
+      "ldap[d-i slapd/password2 password]"        string => "$(make_pressed.conf[ldap_pass_admin][1])";
+      "ldap[d-i slapd/purge_database boolean]"    string => "true";
+      "ldap[d-i slapd/allow_ldap_v2 boolean]"     string => "true";
+      "ldap[d-i slapd/backend select]"            string => "HDB";
+
+
+      "parameter_name" slist => getindices("ldap");
+
+  delete_lines:
+      "$(parameter_name).*";
+
+  insert_lines:
+      "$(parameter_name) $(ldap[$(parameter_name)])";
+
+}
