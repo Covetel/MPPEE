@@ -38,7 +38,7 @@ services:
       "isc-dhcp-server"
           service_policy => "start",
           service_method => dhcp,
-          classes => if_repaired("running");
+          classes => if_repaired("dhcp_running");
 
 files:
     dhcp_installed::
