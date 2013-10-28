@@ -104,99 +104,123 @@ services:
         "slapd"
             service_policy => "start",
             service_method => dhcp_ldap,
-            classes => if_repaired("ldap_running");
+            classes => if_repaired("ldap_running"),
+            action => "log";
 
 files:
     dhcp_ldap_installed::
         "/etc/ldap/slapd.d/cn=config.ldif"
             edit_line => regex_replace("olcLogLevel: none", "olcLogLevel: Stats"),
-            classes => if_ok("log_level_change");
+            classes => if_ok("log_level_change"),
+            action => "log";
 
         "/tmp/ldap_access.ldif"
             create => "true",
             edit_line => insert_lines("$(ldap_access)"),
-            classes => if_ok("ldap_acces");
+            classes => if_ok("ldap_acces"),
+            action => "log";
 
         "/tmp/ldap_ssl.ldif"
             create => "true",
             edit_line => insert_lines("$(ldap_ssl)"),
-            classes => if_ok("ldap_ssl");
+            classes => if_ok("ldap_ssl"),
+            action => "log";
 
         "/tmp/ldap_users.ldif"
             create => "true",
             edit_line => insert_lines("$(ldap_users)"),
-            classes => if_ok("ldap_users");
+            classes => if_ok("ldap_users"),
+            action => "log";
 
         "/etc/ldap/ssl/"
             create => "true",
-            classes => if_ok("ldap_ssl_folder");
+            classes => if_ok("ldap_ssl_folder"),
+            action => "log";
 
         "/etc/ldap/ldap.conf"
             create => "true",
             edit_line => insert_lines("$(ldap_file)"),
-            classes => if_ok("ldap_file_conf");
+            classes => if_ok("ldap_file_conf"),
+            action => "log";
 
         "/etc/default/slapd"
             edit_line => parameters("dhcp_ldap.slapd"),
-            classes => if_ok("ldap_default_ssl");
+            classes => if_ok("ldap_default_ssl"),
+            action => "log";
 
     schemas_convert_file_make::
         "/tmp/schema_convert.conf"
             edit_line => insert_lines("$(dhcp_schema)"),
-            classes => if_ok("dhcp_schema_included");
+            classes => if_ok("dhcp_schema_included"),
+            action => "log";
 
 commands:
     dhcp_ldap_installed::
         "/bin/cp /usr/share/doc/isc-dhcp-server-ldap/dhcp.schema.gz /etc/ldap/schema/"
-            classes => if_repaired("schema_copy");
+            classes => if_repaired("schema_copy"),
+            action => "log";
 
     schemas_convert_file_make::
         "/tmp/schema_convert.conf"
             edit_line => insert_lines("$(dhcp_schema)"),
-            classes => if_ok("dhcp_schema_included");
+            classes => if_ok("dhcp_schema_included"),
+            action => "log";
 
 commands:
     dhcp_ldap_installed::
         "/bin/cp /usr/share/doc/isc-dhcp-server-ldap/dhcp.schema.gz /etc/ldap/schema/"
-            classes => if_repaired("schema_copy");
+            classes => if_repaired("schema_copy"),
+            action => "log";
         ldap_users::
             "/usr/bin/ldapadd -D cn=admin,dc=mppee,dc=gob,dc=ve -f /tmp/ldap_users.ldif -w $(conf[ldap_pass_admin][1]) -x"
-                classes => if_repaired("ldap_users_done");
+                classes => if_repaired("ldap_users_done"),
+                action => "log";
         ldap_users_done::
             "/usr/bin/ldapmodify -QY EXTERNAL -H ldapi:/// -f /tmp/ldap_access.ldif"
-                classes => if_repaired("ldap_acces_done");
+                classes => if_repaired("ldap_acces_done"),
+                action => "log";
         schema_copy::
             "/bin/gunzip /etc/ldap/schema/dhcp.schema.gz"
-                classes => if_repaired("schema_uncompress");
+                classes => if_repaired("schema_uncompress"),
+                action => "log";
         schema_uncompress::
             "/bin/mkdir /tmp/out"
-                classes => if_repaired("out_directory_make");
+                classes => if_repaired("out_directory_make"),
+                action => "log";
         out_directory_make::
             "/usr/bin/perl -e '`/bin/ls /etc/ldap/slapd.d/cn=config/cn=schema/ >/tmp/schema_convert.conf`'"
-                classes => if_repaired("used_schemas");
+                classes => if_repaired("used_schemas"),
+                action => "log";
         used_schemas::
             "/usr/bin/perl -pi -e 's/^cn={.}(.*).ldif$/include \/etc\/ldap\/schema\/\1.schema/g' /tmp/schema_convert.conf"
-                classes => if_repaired("schemas_convert_file_make");
+                classes => if_repaired("schemas_convert_file_make"),
+                action => "log";
         dhcp_schema_included::
             "/usr/sbin/slaptest -f /tmp/schema_convert.conf -F /tmp/out/"
-                classes => if_repaired("schemas_convert");
+                classes => if_repaired("schemas_convert"),
+                action => "log";
         schemas_convert::
             "/usr/bin/perl -e '`/bin/cp /tmp/out/cn=config/cn=schema/* /etc/ldap/slapd.d/cn=config/cn=schema/`'"
-                classes => if_repaired("schemas_convert_copy");
+                classes => if_repaired("schemas_convert_copy"),
+                action => "log";
         schemas_convert_copy::
             "/usr/bin/perl -e '`/bin/chown openldap:openldap /etc/ldap/slapd.d/cn=config/cn=schema/*`'"
-                classes => if_repaired("schemas_ready");
+                classes => if_repaired("schemas_ready"),
+                action => "log";
         schemas_ready::
             "/etc/init.d/slapd restart"
                 handle  =>  "Restart LDAP",
                 comment =>  "Reiniciando LDAP",
-                classes =>  if_repaired("done");
+                classes =>  if_repaired("done"),
+                action => "log";
         ldap_ssl_folder::
             "/usr/bin/openssl req -new -x509 -days 3650 -subj '/C=VE/ST=Caracas/O=MPPEE/OU=Security/CN=$(sys.fqhost)' -nodes -out $(prefix_ssl)/$(cert_name).pem -keyout $(prefix_ssl)/$(cert_name).key"
-                classes => if_repaired("certs_done");
+                classes => if_repaired("certs_done"),
+                action => "log";
         add_ssl::
             "/usr/bin/ldapmodify -QY EXTERNAL -H ldapi:/// -f /tmp/ldap_ssl.ldif"
-                classes => if_repaired("ldap_ssl_done");
+                classes => if_repaired("ldap_ssl_done"),
+                action => "log";
 
 reports:
     dhcp_ldap_installed::
