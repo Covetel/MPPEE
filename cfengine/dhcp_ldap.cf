@@ -4,13 +4,84 @@ vars:
     #Read configuration file
     "match" int => readstringarray("var","$(sys.workdir)/inputs/MPPEE/cfengine/servers_hostname.txt","\s*#[^\n]*"," = ",80,8000);
 
+    "conf_file" int => readstringarray("conf","$(sys.workdir)/inputs/MPPEE/cfengine/conf_servers.txt","\s*#[^\n]*"," = ",80,8000);
+
     #External DNS Variables
     "hostname_dhcp_ldap" string => "$(var[dhcp_ldap][1])";
 
     "prefix" string => "/etc/dhcp";
+    "prefix_ssl" string => "/etc/ldap/ssl";
+    "cert_name" string => "dhcp_ldap";
     "desired_packages" slist => { "isc-dhcp-server-ldap", "slapd", "ldap-utils" };
 
     "dhcp_schema" string => "include /etc/ldap/schema/dhcp.schema";
+
+    "ldap_access" string => "dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+delete: olcAccess
+olcAccess: {2}to * by self write by dn=\"cn=admin,dc=mppee,dc=gob,dc=ve\" write by * read
+
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {2}to * by dn=\"cn=admin,dc=mppee,dc=gob,dc=ve\" write by dn=\"uid=$(conf[dhcp_phpldapadmin_user][1]),ou=people,dc=mppee,dc=gob,dc=ve\" write by dn=\"uid=$(conf[dhcp_ldap_user][1]),ou=people,dc=mppee,dc=gob,dc=ve\" read by self write by users search by * none";
+
+    "ldap_ssl" string => "dn: cn=config
+add: olcTLSCACertificateFile
+olcTLSCACertificateFile: /etc/ldap/ssl/$(cert_name).pem
+-
+add: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/ldap/ssl/$(cert_name).pem
+-
+add: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/ldap/ssl/$(cert_name).key";
+
+    "ldap_file" string =>"#BASE   dc=example,dc=com
+#URI    ldap://ldap.example.com ldap://ldap-master.example.com:666
+
+#SIZELIMIT      12
+#TIMELIMIT      15
+#DEREF          never
+
+BASE   dc=mppee,dc=gob,dc=ve
+URI    ldap://$(sys.fqhost) ldaps://$(sys.fqhost)
+
+# TLS certificates (needed for GnuTLS)
+TLS_CACERT      /etc/ssl/ldap/$(cert_name).pem
+TLS_REQCERT never";
+
+    "ldap_users" string => "dn: ou=people,dc=mppee,dc=gob,dc=ve
+objectClass: organizationalUnit
+description: Rama people de la organizacion
+ou: people
+
+dn: uid=$(conf[dhcp_phpldapadmin_user][1]),ou=people,dc=mppee,dc=gob,dc=ve
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: posixAccount
+cn: $(conf[dhcp_phpldapadmin_user][1])
+sn: $(conf[dhcp_phpldapadmin_user][1])
+uid: $(conf[dhcp_phpldapadmin_user][1])
+gidNumber: 10000
+uidNumber: 10000
+homeDirectory: /home/$(conf[dhcp_phpldapadmin_user][1])
+userPassword: $(conf[dhcp_phpldapadmin_pass][1])
+
+dn: uid=$(conf[dhcp_ldap_user][1]),ou=people,dc=mppee,dc=gob,dc=ve
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: posixAccount
+cn: $(conf[dhcp_ldap_user][1])
+sn: $(conf[dhcp_ldap_user][1])
+uid: $(conf[dhcp_ldap_user][1])
+gidNumber: 10001
+uidNumber: 10001
+homeDirectory: /home/$(conf[dhcp_ldap_user][1])
+userPassword: $(conf[dhcp_ldap_user_pass][1])";
 
 packages:
     install_dhcp_ldap::
@@ -24,6 +95,7 @@ classes:
     "dhcp_ldap" expression => classmatch("$(hostname_dhcp_ldap).*");
     "dhcp_ldap_ready" or => {"schemas_ready", "dhcp_ldap_installed"};
     "install_dhcp_ldap" and => {"dhcp_ldap", "install_ldap"};
+    "add_ssl" and => {"ldap_ssl", "ldap_ssl_folder", "ldap_file_conf", "certs_done"};
 
 services:
     dhcp_ldap_ready::
@@ -33,15 +105,50 @@ services:
             classes => if_repaired("ldap_running");
 
 files:
+    dhcp_ldap_installed::
+        "/etc/ldap/slapd.d/cn=config.ldif"
+            edit_line => regex_replace("olcLogLevel: none", "olcLogLevel: Stats"),
+            classes => if_ok("log_level_change");
+
+        "/tmp/ldap_access.ldif"
+            create => "true",
+            edit_line => insert_lines("$(ldap_access)"),
+            classes => if_ok("ldap_acces");
+
+        "/tmp/ldap_ssl.ldif"
+            create => "true",
+            edit_line => insert_lines("$(ldap_ssl)"),
+            classes => if_ok("ldap_ssl");
+
+        "/tmp/ldap_users.ldif"
+            create => "true",
+            edit_line => insert_lines("$(ldap_users)"),
+            classes => if_ok("ldap_users");
+
+        "/etc/ldap/ssl/"
+            create => "true",
+            classes => if_ok("ldap_ssl_folder");
+
+        #"/etc/ldap/ldap.conf"
+        #    create => "true",
+        #    edit_line => insert_lines("$(ldap_file)"),
+        #    classes => if_ok("ldap_file_conf");
+
     schemas_convert_file_make::
         "/tmp/schema_convert.conf"
             edit_line => insert_lines("$(dhcp_schema)"),
             classes => if_ok("dhcp_schema_included");
 
 commands:
-    dhcp_ldap_installed:: 
+    dhcp_ldap_installed::
         "/bin/cp /usr/share/doc/isc-dhcp-server-ldap/dhcp.schema.gz /etc/ldap/schema/"
             classes => if_repaired("schema_copy");
+        ldap_users::
+            "/usr/bin/ldapadd -D cn=admin,dc=mppee,dc=gob,dc=ve -f /tmp/ldap_users.ldif -w $(conf[ldap_pass_admin][1]) -x"
+                classes => if_repaired("ldap_users_done");
+        ldap_users_done::
+            "/usr/bin/ldapmodify -QY EXTERNAL -H ldapi:/// -f /tmp/ldap_access.ldif"
+                classes => if_repaired("ldap_acces_done");
         schema_copy::
             "/bin/gunzip /etc/ldap/schema/dhcp.schema.gz"
                 classes => if_repaired("schema_uncompress");
@@ -68,8 +175,13 @@ commands:
                 handle  =>  "Restart LDAP",
                 comment =>  "Reiniciando LDAP",
                 classes =>  if_repaired("done");
-            
-    
+        ldap_ssl_folder::
+            "/usr/bin/openssl req -new -x509 -days 3650 -subj '/C=VE/ST=Caracas/O=MPPEE/OU=Security/CN=$(sys.fqhost)' -nodes -out $(prefix_ssl)/$(cert_name).pem -keyout $(prefix_ssl)/$(cert_name).key"
+                classes => if_repaired("certs_done");
+        #add_ssl::
+        #    "/usr/bin/ldapmodify -QY EXTERNAL -H ldapi:/// -f /tmp/ldap_conf.ldif"
+        #        classes => if_repaired("ldap_ssl_done");
+
 reports:
     dhcp_ldap_installed::
         "DHCP LDAP Installed";
@@ -77,6 +189,10 @@ reports:
         "DHCP schemas installed";
     !ldap_running::
         "Verifique la configuración del LDAP el servicio no esta arriba";
+    ldap_acces_done::
+        "Usuarios aprovisionados en el LDAP";
+    ldap_ssl_done::
+        "LDAP SSL Configurado";
     done::
         "LDAP en funcionamiento con schemas DHCP";
 }
