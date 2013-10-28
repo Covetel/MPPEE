@@ -83,6 +83,8 @@ uidNumber: 10001
 homeDirectory: /home/$(conf[dhcp_ldap_user][1])
 userPassword: $(conf[dhcp_ldap_user_pass][1])";
 
+    "slapd[SLAPD_SERVICES=]" string => "\"ldap:/// ldapi:/// ldaps:///\"";
+
 packages:
     install_dhcp_ldap::
         "$(desired_packages)"
@@ -95,7 +97,7 @@ classes:
     "dhcp_ldap" expression => classmatch("$(hostname_dhcp_ldap).*");
     "dhcp_ldap_ready" or => {"schemas_ready", "dhcp_ldap_installed"};
     "install_dhcp_ldap" and => {"dhcp_ldap", "install_ldap"};
-    "add_ssl" and => {"ldap_ssl", "ldap_ssl_folder", "ldap_file_conf", "certs_done"};
+    "add_ssl" and => {"ldap_ssl", "ldap_ssl_folder", "ldap_file_conf", "ldap_default_ssl", "certs_done"};
 
 services:
     dhcp_ldap_ready::
@@ -129,10 +131,24 @@ files:
             create => "true",
             classes => if_ok("ldap_ssl_folder");
 
-        #"/etc/ldap/ldap.conf"
-        #    create => "true",
-        #    edit_line => insert_lines("$(ldap_file)"),
-        #    classes => if_ok("ldap_file_conf");
+        "/etc/ldap/ldap.conf"
+            create => "true",
+            edit_line => insert_lines("$(ldap_file)"),
+            classes => if_ok("ldap_file_conf");
+
+        "/etc/default/slapd"
+            edit_line => parameters("dhcp_ldap.slapd"),
+            classes => if_ok("ldap_default_ssl");
+
+    schemas_convert_file_make::
+        "/tmp/schema_convert.conf"
+            edit_line => insert_lines("$(dhcp_schema)"),
+            classes => if_ok("dhcp_schema_included");
+
+commands:
+    dhcp_ldap_installed::
+        "/bin/cp /usr/share/doc/isc-dhcp-server-ldap/dhcp.schema.gz /etc/ldap/schema/"
+            classes => if_repaired("schema_copy");
 
     schemas_convert_file_make::
         "/tmp/schema_convert.conf"
@@ -178,9 +194,9 @@ commands:
         ldap_ssl_folder::
             "/usr/bin/openssl req -new -x509 -days 3650 -subj '/C=VE/ST=Caracas/O=MPPEE/OU=Security/CN=$(sys.fqhost)' -nodes -out $(prefix_ssl)/$(cert_name).pem -keyout $(prefix_ssl)/$(cert_name).key"
                 classes => if_repaired("certs_done");
-        #add_ssl::
-        #    "/usr/bin/ldapmodify -QY EXTERNAL -H ldapi:/// -f /tmp/ldap_conf.ldif"
-        #        classes => if_repaired("ldap_ssl_done");
+        add_ssl::
+            "/usr/bin/ldapmodify -QY EXTERNAL -H ldapi:/// -f /tmp/ldap_ssl.ldif"
+                classes => if_repaired("ldap_ssl_done");
 
 reports:
     dhcp_ldap_installed::
