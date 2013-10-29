@@ -83,7 +83,7 @@ uidNumber: 10001
 homeDirectory: /home/$(conf[dhcp_ldap_user][1])
 userPassword: $(conf[dhcp_ldap_user_pass][1])";
 
-    "slapd[SLAPD_SERVICES=]" string => "\"ldap:/// ldapi:/// ldaps:///\"";
+    "slapd" string => "SLAPD_SERVICES=\"ldap:/// ldapi:/// ldaps:///\"";
 
 packages:
     install_dhcp_ldap::
@@ -97,7 +97,7 @@ classes:
     "dhcp_ldap" expression => classmatch("$(hostname_dhcp_ldap).*");
     "dhcp_ldap_ready" or => {"schemas_ready", "dhcp_ldap_installed"};
     "install_dhcp_ldap" and => {"dhcp_ldap", "install_ldap"};
-    "add_ssl" and => {"ldap_ssl", "ldap_ssl_folder", "ldap_file_conf", "ldap_default_ssl", "certs_done"};
+    "restart" or => {"schemas_ready", "ldap_ssl_done"};
 
 services:
     dhcp_ldap_ready::
@@ -120,21 +120,22 @@ files:
             classes => if_ok("ldap_acces"),
             action => "log";
 
-        "/tmp/ldap_ssl.ldif"
-            create => "true",
-            edit_line => insert_lines("$(ldap_ssl)"),
-            classes => if_ok("ldap_ssl"),
-            action => "log";
-
         "/tmp/ldap_users.ldif"
             create => "true",
             edit_line => insert_lines("$(ldap_users)"),
             classes => if_ok("ldap_users"),
             action => "log";
 
+    ldap_acces_done::
         "/etc/ldap/ssl/"
             create => "true",
             classes => if_ok("ldap_ssl_folder"),
+            action => "log";
+
+        "/tmp/ldap_ssl.ldif"
+            create => "true",
+            edit_line => insert_lines("$(ldap_ssl)"),
+            classes => if_ok("ldap_ssl"),
             action => "log";
 
         "/etc/ldap/ldap.conf"
@@ -144,20 +145,8 @@ files:
             action => "log";
 
         "/etc/default/slapd"
-            edit_line => parameters("dhcp_ldap.slapd"),
+            edit_line => regex_replace("SLAPD_SERVICES=\"ldap:/// ldapi:///\"", "$(slapd)"),
             classes => if_ok("ldap_default_ssl"),
-            action => "log";
-
-    schemas_convert_file_make::
-        "/tmp/schema_convert.conf"
-            edit_line => insert_lines("$(dhcp_schema)"),
-            classes => if_ok("dhcp_schema_included"),
-            action => "log";
-
-commands:
-    dhcp_ldap_installed::
-        "/bin/cp /usr/share/doc/isc-dhcp-server-ldap/dhcp.schema.gz /etc/ldap/schema/"
-            classes => if_repaired("schema_copy"),
             action => "log";
 
     schemas_convert_file_make::
@@ -213,11 +202,11 @@ commands:
                 comment =>  "Reiniciando LDAP",
                 classes =>  if_repaired("done"),
                 action => "log";
-        ldap_ssl_folder::
+        ldap_ssl::
             "/usr/bin/openssl req -new -x509 -days 3650 -subj '/C=VE/ST=Caracas/O=MPPEE/OU=Security/CN=$(sys.fqhost)' -nodes -out $(prefix_ssl)/$(cert_name).pem -keyout $(prefix_ssl)/$(cert_name).key"
                 classes => if_repaired("certs_done"),
                 action => "log";
-        add_ssl::
+
             "/usr/bin/ldapmodify -QY EXTERNAL -H ldapi:/// -f /tmp/ldap_ssl.ldif"
                 classes => if_repaired("ldap_ssl_done"),
                 action => "log";
