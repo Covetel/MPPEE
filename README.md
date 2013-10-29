@@ -26,6 +26,18 @@ cf-agent --bootstrap [SERVER IP]
 ```
 * Modificar en el archivo serverss\_hostname.txt las variables internal_dns y external_dns por el hostname de la maquina donde se instalará el servidor DNS interno y el DNS externo respectivamente.
 
+### Configurar envío de correos al administrador
+
+* Editar el archivo /var/cfengine/masterfiles/control/cf_execd.cf
+* Modificar las siguientes variables de acuerdo a su plataforma:
+
+```
+mailto     => "admin@mppee.gob.ve";
+mailfrom   => "root@$(sys.host)\.$(def.domain)";
+smtpserver => "192.168.1.1";
+mailmaxlines => "200";
+```
+
 Cliente
 -----
 
