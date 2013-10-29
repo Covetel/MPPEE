@@ -12,14 +12,14 @@ vars:
     "prefix" string => "/etc/dhcp";
     "desired_packages" slist => { "isc-dhcp-server" };
 
-    "dhcpd" string => "ldap-server $(dhcp[dhcp_ldap_server][1]);
-ldap-port $(dhcp[dhcp_ldap_port][1]);
-ldap-username $(dhcp[dhcp_ldap_username][1]);
-ldap-password $(dhcp[dhcp_ldap_password][1]);
-ldap-base-dn $(dhcp[dhcp_ldap_base_dn][1]);
-ldap-dhcp-server-cn $(dhcp[dhcp_ldap_dhcp_server_cn][1]);
-ldap-method $(dhcp[dhcp_ldap_method][1]);
-ldap-debug-file $(dhcp[dhcp_ldap_debug_file][1]);";
+"dhcpd[ldap-server]" string => "$(dhcp[dhcp_ldap_server][1]);";
+"dhcpd[ldap-port]" string => "$(dhcp[dhcp_ldap_port][1]);";
+"dhcpd[ldap-username]" string => "$(dhcp[dhcp_ldap_username][1]);";
+"dhcpd[ldap-password]" string => "$(dhcp[dhcp_ldap_password][1]);";
+"dhcpd[ldap-base-dn]" string => "$(dhcp[dhcp_ldap_base_dn][1]);";
+"dhcpd[ldap-dhcp-server-cn]" string => "$(dhcp[dhcp_ldap_dhcp_server_cn][1]);";
+"dhcpd[ldap-method]" string => "$(dhcp[dhcp_ldap_method][1]);";
+"dhcpd[ldap-debug-file]" string => "$(dhcp[dhcp_ldap_debug_file][1]);";
 
 packages:
     dhcp::
@@ -44,8 +44,7 @@ files:
     dhcp_installed::
         "$(prefix)/dhcpd.conf"
             create => "true",
-            edit_line => insert_lines("$(dhcpd)"),
-            edit_defaults => empty, 
+            edit_line => set_config_values("dhcp.dhcpd"),
             classes => if_repaired("dhcp_configured"),
             action => "log";
         
