@@ -111,48 +111,48 @@ files:
     dhcp_ldap_installed::
         "/etc/ldap/slapd.d/cn=config.ldif"
             edit_line => regex_replace("olcLogLevel: none", "olcLogLevel: Stats"),
-            classes => if_ok("log_level_change"),
+            classes => if_repaired("log_level_change"),
             action => "log";
 
         "/tmp/ldap_access.ldif"
             create => "true",
             edit_line => insert_lines("$(ldap_access)"),
-            classes => if_ok("ldap_acces"),
+            classes => if_repaired("ldap_acces"),
             action => "log";
 
         "/tmp/ldap_users.ldif"
             create => "true",
             edit_line => insert_lines("$(ldap_users)"),
-            classes => if_ok("ldap_users"),
+            classes => if_repaired("ldap_users"),
             action => "log";
 
     ldap_acces_done::
         "/etc/ldap/ssl/"
             create => "true",
-            classes => if_ok("ldap_ssl_folder"),
+            classes => if_repaired("ldap_ssl_folder"),
             action => "log";
 
         "/tmp/ldap_ssl.ldif"
             create => "true",
             edit_line => insert_lines("$(ldap_ssl)"),
-            classes => if_ok("ldap_ssl"),
+            classes => if_repaired("ldap_ssl"),
             action => "log";
 
         "/etc/ldap/ldap.conf"
             create => "true",
             edit_line => insert_lines("$(ldap_file)"),
-            classes => if_ok("ldap_file_conf"),
+            classes => if_repaired("ldap_file_conf"),
             action => "log";
 
         "/etc/default/slapd"
             edit_line => regex_replace("SLAPD_SERVICES=\"ldap:/// ldapi:///\"", "$(slapd)"),
-            classes => if_ok("ldap_default_ssl"),
+            classes => if_repaired("ldap_default_ssl"),
             action => "log";
 
     schemas_convert_file_make::
         "/tmp/schema_convert.conf"
             edit_line => insert_lines("$(dhcp_schema)"),
-            classes => if_ok("dhcp_schema_included"),
+            classes => if_repaired("dhcp_schema_included"),
             action => "log";
 
 commands:
