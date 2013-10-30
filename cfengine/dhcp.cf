@@ -44,6 +44,7 @@ files:
     dhcp_installed::
         "$(prefix)/dhcpd.conf"
             create => "true",
+            edit_defaults => empty,
             edit_line => set_config_values("dhcp.dhcpd"),
             classes => if_repaired("dhcp_configured"),
             action => "log";
