@@ -84,9 +84,9 @@ dn: ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 objectClass: top
 objectClass: organizationalUnit
 description: Configs
-ou: Configs
+ou: Configs";
 
-dn: cn=MPPEE-Server,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
+    "dhcpserver" string => "dn: cn=MPPEE-Server,ou=Configs,ou=DHCP,ou=Servicios,dc=mppee,dc=gob,dc=ve
 objectClass: top
 objectClass: dhcpServer
 cn: MPPEE-Server
@@ -124,7 +124,8 @@ classes:
     "ldap_present" and => {"dhcp_ldap", "ldap_installed"};
     "configure_ldap" or => {"ldap_present", "dhcp_ldap_installed"};
     "restart" or => {"ldap_file_conf", "log_level_change", "ldap_default_ssl", "schemas_ready", "ldap_users_done", "ldap_access_done", "ldap_ssl_done", "ldap_dhcp_done"};
-    "modify_ldap_conf" or => {"ldap_access_done", "ldap_present"};
+    "add_dhcpserver" and => {"ldap_ou_done", "dhcpserver_ldif", "schemas_done"};
+    "add_dhcpservice" and => {"dhcpserver_done", "dhcpservice_ldif"};
 
 packages:
     install_ldap::
@@ -168,6 +169,12 @@ files:
             classes => if_repaired("ou_ldif"),
             action => "log";
 
+        "/tmp/dhcpserver.ldif"
+            create => "true",
+            edit_line => insert_lines("$(dhcpserver)"),
+            classes => if_repaired("dhcpserver_ldif"),
+            action => "log";
+
         "$(prefix)/ssl/."
             create => "true",
             perms => mog("600","openldap","openldap"),
@@ -186,17 +193,16 @@ files:
             classes => if_repaired("log_level_change"),
             action => "log";
 
+        "$(prefix)/ldap.conf"
+            create => "true",
+            edit_line => set_config_values("dhcp_ldap.ldap_file"),
+            classes => if_repaired("ldap_file_conf"),
+            action => "log";
+
         "/etc/default/slapd"
             edit_line => set_variable_values("dhcp_ldap.slapd_services"),
             classes => if_repaired("ldap_default_ssl"),
             action => "log";
-
-        modify_ldap_conf::
-            "$(prefix)/ldap.conf"
-                create => "true",
-                edit_line => set_config_values("dhcp_ldap.ldap_file"),
-                classes => if_repaired("ldap_file_conf"),
-                action => "log";
 
 commands:
     dhcp_ldap_installed::
@@ -204,7 +210,7 @@ commands:
             classes => if_repaired("schema_copy"),
             action => "log";
         ldap_users::
-            "/usr/bin/ldapadd -D cn=admin,dc=mppee,dc=gob,dc=ve -f /tmp/ldap_users.ldif -w $(conf[ldap_pass_admin][1]) -x"
+            "/usr/bin/ldapadd -H ldap://localhost -D cn=admin,dc=mppee,dc=gob,dc=ve -f /tmp/ldap_users.ldif -w $(conf[ldap_pass_admin][1]) -x"
                 classes => if_repaired("ldap_users_done"),
                 action => "log";
         ldap_users_done::
@@ -239,6 +245,10 @@ commands:
             "/usr/bin/perl -e '`/bin/chown openldap:openldap $(prefix)/slapd.d/cn=config/cn=schema/*`'"
                 classes => if_repaired("schemas_ready"),
                 action => "log";
+            schemas_ready::
+                "/etc/init.d/slapd restart"
+                    classes =>  if_repaired("schemas_done"),
+                    action => "log";
         ldap_ssl_folder::
             "/usr/bin/openssl req -new -x509 -days 3650 -subj '/C=VE/ST=Caracas/O=MPPEE/OU=Security/CN=$(sys.fqhost)' -nodes -out $(prefix_ssl)/$(cert_name).pem -keyout $(prefix_ssl)/$(cert_name).key"
                 classes => if_repaired("certs_make"),
@@ -252,11 +262,15 @@ commands:
                 classes => if_repaired("ldap_ssl_done"),
                 action => "log";
         ou_ldif::
-            "/usr/bin/ldapadd -D cn=admin,dc=mppee,dc=gob,dc=ve -f /tmp/ldap_ou.ldif -w $(conf[ldap_pass_admin][1]) -x"
+            "/usr/bin/ldapadd -H ldap://localhost -D cn=admin,dc=mppee,dc=gob,dc=ve -f /tmp/ldap_ou.ldif -w $(conf[ldap_pass_admin][1]) -x"
                 classes => if_repaired("ldap_ou_done"),
                 action => "log";
-        ldap_ou_done::
-            "/usr/bin/ldapadd -D cn=admin,dc=mppee,dc=gob,dc=ve -f $(sys.workdir)/inputs/MPPEE/cfengine/dhcp.ldif -w $(conf[ldap_pass_admin][1]) -x"
+        add_dhcpserver::
+            "/usr/bin/ldapadd -H ldap://localhost -D cn=admin,dc=mppee,dc=gob,dc=ve -f /tmp/dhcpserver.ldif -w $(conf[ldap_pass_admin][1]) -x"
+                classes => if_repaired("dhcpserver_done"),
+                action => "log";
+        dhcpserver_done::
+            "/usr/bin/ldapadd -H ldap://localhost -D cn=admin,dc=mppee,dc=gob,dc=ve -f $(sys.workdir)/inputs/MPPEE/cfengine/dhcp.ldif -w $(conf[ldap_pass_admin][1]) -x"
                 classes => if_repaired("ldap_dhcp_done"),
                 action => "log";
 
