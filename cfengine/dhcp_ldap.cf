@@ -187,7 +187,7 @@ files:
             action => "log";
 
         "/etc/default/slapd"
-            edit_line => set_variable_values("dhcp_ldap.slapd_services)"),
+            edit_line => set_variable_values("dhcp_ldap.slapd_services"),
             classes => if_repaired("ldap_default_ssl"),
             action => "log";
 
