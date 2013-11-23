@@ -259,7 +259,7 @@ files:
 
 commands:
 	bind_configured::
-		"/etc/init.d/bind restart"
+		"/etc/init.d/bind9 restart"
             handle  =>  "restart bind",
             comment =>  "Reiniciando el bind",
             classes =>  if_repaired("done");
