@@ -54,49 +54,49 @@ zone \"opsis.org.ve\" {
     # Template for /etc/bind/db.200 file
     "db_200" string => "$TTL    3600
 @   IN  SOA  ns1.mppee.gob.ve. hostmaster.mppee.gob.ve. (
-        2011053001 ; Serial
-        3600 ; Refresh
-        1200 ; Retry
-        86400 ; Expire
-        3600 ) ; Negative Cache TTL
+	2013112301 ; Serial
+	3600 ; Refresh
+	1200 ; Retry
+	86400 ; Expire
+	3600 ) ; Negative Cache TTL
 ; 
 
 @   IN  NS  ns1.mppee.gob.ve.
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1.mppee.gob.ve.
 @   IN  MX  10 smtp01.mppee.gob.ve.
-131.12.1  IN  PTR  smtp01.mppee.gob.ve.
-131.12.1  IN  PTR  mx01.mppee.gob.ve.
-200.12.1  IN  PTR  smtp01.mppee.gob.ve.
-200.12.1  IN  PTR  mx01.mppee.gob.ve.
-201.12.1  IN  PTR  ns1.mppee.gob.ve.
-202.12.1  IN  PTR  ns2.mppee.gob.ve.";
+1.1.12    IN  PTR  ns2.mppee.gob.ve.
+131.1.12    IN  PTR  smtp01.mppee.gob.ve.
+131.1.12    IN  PTR  mx01.mppee.gob.ve.
+200.1.12    IN  PTR  smtp01.mppee.gob.ve.
+201.1.12    IN  PTR  ns1.mppee.gob.ve.
+202.1.12    IN  PTR  ns2.mppee.gob.ve.";
 
     # Template for /etc/bind/db.216 file
     "db_216" string => "$TTL    3600
 @   IN  SOA  ns1.mppee.gob.ve. hostmaster.mppee.gob.ve. (
-        2010040501 ; Serial
-        3600 ; Refresh
-        1200 ; Retry
-        86400 ; Expire
-        3600 ) ; Negative Cache TTL
+	2013112301; Serial
+	3600 ; Refresh
+	1200 ; Retry
+	86400 ; Expire
+	3600 ) ; Negative Cache TTL
 ; 
 
 @   IN  NS  ns1.mppee.gob.ve.
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1.mppee.gob.ve.
 @   IN  MX  10 smtp01.mppee.gob.ve.
-; 131.128-159.46.72    IN  PTR  smtp01.mppee.gob.ve.";
+131.72.128-159.46    IN  PTR  smtp01.mppee.gob.ve.";
 
     # Template for /etc/bind/fidelz.org.ve.zone file
     "fidelz" string => "$ORIGIN .
-$TTL    7200
-fidelz.org.ve   IN  SOA  ns1.mppee.gob.ve. hostmaster.mppee.gob.ve. (
-        2013052701 ; Serial
-        3600 ; Refresh
-        1800 ; Retry
-        1209600 ; Expire
-        86400 ) ; Negative Cache TTL
+$TTL	7200
+fidelz.org.ve   IN  SOA  ns1 hostmaster (
+	2013112301; Serial
+	3600 ; Refresh
+	1800 ; Retry
+	1209600 ; Expire
+	86400 ) ; Negative Cache TTL
 ; 
 $ORIGIN fidelz.org.ve
 
@@ -104,24 +104,24 @@ $ORIGIN fidelz.org.ve
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1
 @   IN  MX  10 smtp01
-www    IN  A  200.1.12.201
-imap01    IN  CNAME  imap.mppee.gob.ve.
-smtp01    IN  CNAME  smtp.mppee.gob.ve.
+www    IN  CNAME  fildelz_website
+fildelz_website    IN  A  200.1.12.201
+imap01    IN  CNAME  imap
+smtp01    IN  CNAME  smtp
 fidelz_website    IN  CNAME  www
-;fildelz_website    IN  A  200.1.12.201
-;www    IN  CNAME  fildelz_website";
+www    IN  A  200.1.12.201";
 
     # Template for /etc/bind/mppee.gob.ve.zone file
     "mppee" string => "$ORIGIN .
-$TTL    7200
+$TTL	7200
 mppee.gob.ve   IN  SOA  ns1.mppee.gob.ve. hostmaster.mppee.gob.ve. (
-        2013081403 ; Serial
-        3600 ; Refresh
-        1800 ; Retry
-        1209600 ; Expire
-        86400 ) ; Negative Cache TTL
+	2013112301; Serial
+	3600 ; Refresh
+	1800 ; Retry
+	1209600 ; Expire
+	86400 ) ; Negative Cache TTL
 ; 
-         TXT \"v=spf1 mx ipv4:200.1.10.0/24 ipv4:200.1.12.0/24 -all\"
+	 TXT 'v=spf1 mx ipv4:200.1.10.0/24 ipv4:200.1.12.0/24 -all'
 
 $ORIGIN mppee.gob.ve
 
@@ -130,51 +130,53 @@ $ORIGIN mppee.gob.ve
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1.mppee.gob.ve.
 @   IN  MX  10 smtp01.mppee.gob.ve.
-ns1    IN  A  200.1.12.201
-ns2    IN  A  200.1.12.202
-smtp01    IN  A  200.1.12.200
-webmail    IN  A  200.1.12.209
-www    IN  A  200.1.12.201
 7o    IN  A  200.1.12.203
 acsi    IN  A  200.1.12.205
 congresoureerpp    IN  A  200.1.12.211
+mesatrabajo    IN  CNAME  corpoelecindustrial
+mesadetrabajos    IN  CNAME  corpoelecindustrial
+mesadetrabajo    IN  CNAME  corpoelecindustrial
 corpoelecindustrial    IN  A  200.1.12.232
+imap01    IN  CNAME  correo
+imap    IN  CNAME  correo
 correo    IN  A  200.1.12.201
 documentos    IN  A  200.1.12.206
 dvscse    IN  A  200.1.12.207
 extranet    IN  A  200.1.12.202
+fiscalizacioncomunal    IN  A  200.1.12.201
+ns1    IN  A  200.1.12.201
+ns2    IN  A  200.1.12.202
 ovpn    IN  A  200.1.12.201
 proyectosatit    IN  A  200.1.12.208
+ovpn    IN  CNAME  registrocongresouree
+mail    IN  CNAME  registrocongresouree
 registrocongresouree    IN  A  200.1.12.201
 sie    IN  A  200.1.12.204
-mesatrabajo    IN  CNAME  corpoelecindustrial
-mesadetrabajos    IN  CNAME  corpoelecindustrial
-mesadetrabajo    IN  CNAME  corpoelecindustrial
+sise    IN  A  200.1.12.203
 smtp    IN  CNAME  smtp01
 mx01    IN  CNAME  smtp01
-imap01    IN  CNAME  smtp01
-imap    IN  CNAME  smtp01
-mail    IN  CNAME  registrocongresouree
-;ovpn    IN  CNAME  registrocongresouree
-;www.mppee.gob.ve.    IN  CNAME  webgraphs
-;ovpn    IN  CNAME  www
-;mail    IN  CNAME  www";
+smtp01    IN  A  200.1.12.200
+www.mppee.gob.ve.    IN  CNAME  webgraphs
+webmail    IN  A  200.1.12.209
+ovpn    IN  CNAME  www
+mail    IN  CNAME  www
+www    IN  A  200.1.12.201";
 
     # Template for /etc/bind/opsis.org.ve.zone file
     "opsis" string => "$ORIGIN .
-$TTL    7200
-opsis.org.ve  IN  SOA ns1.mppee.gob.ve. hostmaster.mppee.gob.ve.  (
-        2010070901 ; Serial
-        3600 ; Refresh
-        1800 ; Retry
-        1209600 ; Expire
-        86400 ) ; Negative Cache TTL
+$TTL	7200
+opsis.org.ve   IN  SOA  ns1 hostmaster (
+	2013112301; Serial
+	3600 ; Refresh
+	1800 ; Retry
+	1209600 ; Expire
+	86400 ) ; Negative Cache TTL
 ; 
 $ORIGIN opsis.org.ve
 
 @   IN  NS  ns1.mppee.gob.ve.
 @   IN  NS  ns2.mppee.gob.ve.
-@   IN  PTR  ns1.mppee.gob.ve.
+@   IN  PTR  ns1
 @   IN  MX  10 smtp01
 smtp01    IN  A  216.72.46.131
 www    IN  A  200.1.10.106";
