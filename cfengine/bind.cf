@@ -8,7 +8,7 @@ vars:
     "hostname_external_dns" string => "$(var[external_dns][1])";
 
     "prefix" string => "/etc/bind";
-    "desired_packages" slist => { "bind9" };
+    "desired_packages" slist => { "bind9,bind9utils" };
 
     # Variables for /etc/bind/named.conf
     "resolv" string => "nameserver 127.0.0.1";
