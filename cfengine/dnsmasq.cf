@@ -23,7 +23,7 @@ log-queries
 resolv-file=/etc/forwarders.conf";
 
     # Variables for /etc/forwarders.conf
-    "forwarders" string => "nameserver 200.44.32.12";
+    "forwarders" string => "nameserver 208.67.222.222";
 
     # Template for /etc/hosts file
     "hosts" slist => {
