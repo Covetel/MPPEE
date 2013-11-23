@@ -105,10 +105,8 @@ $ORIGIN fidelz.org.ve
 @   IN  PTR  ns1
 @   IN  MX  10 smtp01
 www    IN  CNAME  fildelz_website
-fildelz_website    IN  A  200.1.12.201
 imap01    IN  CNAME  imap
 smtp01    IN  CNAME  smtp
-fidelz_website    IN  CNAME  www
 www    IN  A  200.1.12.201";
 
     # Template for /etc/bind/mppee.gob.ve.zone file
@@ -154,7 +152,6 @@ sise    IN  A  200.1.12.203
 smtp    IN  CNAME  smtp01
 mx01    IN  CNAME  smtp01
 smtp01    IN  A  200.1.12.200
-www.mppee.gob.ve.    IN  CNAME  webgraphs
 webmail    IN  A  200.1.12.209
 mail    IN  CNAME  www
 www    IN  A  200.1.12.201";
