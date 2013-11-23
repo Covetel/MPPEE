@@ -8,7 +8,7 @@ use Data::Dumper;
 my $ld =  shift || "/home/aphu/Documents/Covetel/MPPEE/MPPEE-Covetel/dns.ldif";
 
 #my $prefix = "/etc/bind";
-my $prefix = "/home/aphu/Documents/Covetel/MPPEE/bind/examples";
+my $prefix = "/home/cmaldonado/Documents/laboral/covetel/MPPEE/bind";
 my $named = $prefix."/named.conf.zones";
 
 my @zones;
