@@ -104,7 +104,6 @@ $ORIGIN fidelz.org.ve
 @   IN  NS  ns2.mppee.gob.ve.
 @   IN  PTR  ns1
 @   IN  MX  10 smtp01
-www    IN  CNAME  fildelz_website
 imap01    IN  CNAME  imap
 smtp01    IN  CNAME  smtp
 www    IN  A  200.1.12.201";
