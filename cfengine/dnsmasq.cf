@@ -216,6 +216,7 @@ resolv-file=/etc/forwarders.conf";
 "10.1.5.23 test.mppee.gob.ve test",
 "10.1.5.100 testmail.mppee.gob.ve testmail",
 "10.1.5.180 thebeatles.mppee.gob.ve thebeatles",
+"10.1.5.180 faraday.mppee.gob.ve faraday",
 "10.200.87.150 thefinalcut.mppee.gob.ve thefinalcut",
 "10.200.87.150 octopussy.mppee.gob.ve octopussy",
 "10.200.87.141 thewall.mppee.gob.ve thewall",
@@ -311,7 +312,6 @@ cname=corpoelecindustrial.mppee.gob.ve,mesatrabajo.mppee.gob.ve
 cname=correo.mppee.gob.ve,webmail.mppee.gob.ve
 cname=divisionbell-dashboard.mppee.gob.ve,divisionbell-db.mppee.gob.ve
 cname=eddiepalmieri.mppee.gob.ve,smtp02.mppee.gob.ve
-cname=faraday.mppee.gob.ve,thebeatles.mppee.gob.ve
 cname=ftp.mppee.gob.ve,lovemedo.mppee.gob.ve
 cname=imap.mppee.gob.ve,imap01.mppee.gob.ve
 cname=imap02.mppee.gob.ve,letitbe.mppee.gob.ve
