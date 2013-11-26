@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use Net::LDAP::LDIF;
-use Test::Simple tests => 150;
+use Test::Simple tests => 562;
 use Net::DNS;
 use Data::Dumper;
 use v5.14;
@@ -46,6 +46,7 @@ foreach my $host (@hosts) {
         given ($p) {
             when ("CNAME") {
                 foreach my $cnames (@{$pointers->{$host}->{$p}}) {
+	  next if $cnames =~ /faraday/;
                     print "Probando ".$cnames." Tipo ".$p."\n";
                     my $query = $res->query($cnames, $p);
                     if ($query) {
@@ -53,7 +54,7 @@ foreach my $host (@hosts) {
                             ok($cnames ~~ @{$pointers->{$host}->{$p}}, "Host: ".$cnames." - Tipo de Puntero: ".$p." - Respuesta ".$cname->cname."\n"); 
                         }
                     }else{
-                        print "Falló en ".$cnames." Tipo ".$p."\n#\n";
+                        print "fail in ".$cnames." type ".$p."\n#\n";
                     }
                 }
             }
